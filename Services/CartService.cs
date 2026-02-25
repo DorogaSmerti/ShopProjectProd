@@ -10,9 +10,14 @@ public class CartService : ICartService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<List<CartItemDto>> GetCartAsync(string userId)
+    public async Task<Result<List<CartItemDto>>> GetCartAsync(string userId)
     {
         var cartItem = await _unitOfWork.CartItem.GetCartAsync(userId);
+
+        if (cartItem == null || !cartItem.Any())
+        {
+            return Result<List<CartItemDto>>.Failure(DomainErrors.Cart.CartNotFound);
+        }
 
         var cartDto = cartItem.Select(item => new CartItemDto
         {
@@ -23,21 +28,21 @@ public class CartService : ICartService
             ProductId = item.ProductId
         }).ToList();
         
-        return cartDto;
+        return Result<List<CartItemDto>>.Success(cartDto);
     }
 
-    public async Task<(CartResult cartResult, CartItemDto? cartItemDto)> AddToCartAsync(string userId, int productId, int quantity)
+    public async Task<Result<CartItemDto>> AddToCartAsync(string userId, int productId, int quantity)
     {
         var product = await _unitOfWork.Products.GetByIdProduct(productId);
 
         if (product == null)
         {
-            return(CartResult.ProductNotFound, null);
+            return Result<CartItemDto>.Failure(DomainErrors.Cart.ProductNotFound);
         }
 
         if (product.Stock < quantity)
         {
-            return (CartResult.NotEnoughStock, null);
+            return Result<CartItemDto>.Failure(DomainErrors.Cart.NotEnoughStock);
         }
 
         var existingItem = await _unitOfWork.CartItem.GetCartItemByProductAsync(userId, productId);
@@ -71,42 +76,42 @@ public class CartService : ICartService
             UserId = itemToReturn.UserId,
             ProductId = itemToReturn.ProductId
         };
-        return (CartResult.Success, resultDto);
+        return Result<CartItemDto>.Success(resultDto);
     }
 
-    public async Task<CartResult> DeleteFromCartAsync(string userId, int cartItemId)
+    public async Task<Result<bool>> DeleteFromCartAsync(string userId, int cartItemId)
     {
         var cartItem = await _unitOfWork.CartItem.GetCartItemAsync(userId, cartItemId);
 
         if (cartItem == null)
         {
-            return CartResult.ItemNotFound;
+            return Result<bool>.Failure(DomainErrors.Cart.CartNotFound);
         }
 
         _unitOfWork.CartItem.DeleteFromCart(cartItem);
         await _unitOfWork.CompleteAsync();
-        return CartResult.Success;
+        return Result<bool>.Success(true);
     }
     
-    public async Task<CartResult> UpdateQuantityAsync(string userId, int cartItemId, int quantity)
+    public async Task<Result<bool>> UpdateQuantityAsync(string userId, int cartItemId, int quantity)
     {
         var cartItem = await _unitOfWork.CartItem.GetCartItemAsync(userId, cartItemId);
 
         if (cartItem == null)
         {
-            return CartResult.ItemNotFound;
+            return Result<bool>.Failure(DomainErrors.Cart.CartNotFound);
         }
 
         var product = await _unitOfWork.Products.GetByIdProduct(cartItem.ProductId);
 
         if (product == null)
         {
-            return CartResult.ProductNotFound;
+            return Result<bool>.Failure(DomainErrors.Cart.ProductNotFound);
         }
 
         if (product.Stock < quantity)
         {
-            return CartResult.NotEnoughStock;
+            return Result<bool>.Failure(DomainErrors.Cart.NotEnoughStock);
         }
 
         if (quantity == 0)
@@ -118,6 +123,6 @@ public class CartService : ICartService
             cartItem.QuantityCartItem = quantity;
         }
         await _unitOfWork.CompleteAsync();
-        return CartResult.Success;
+        return Result<bool>.Success(true);
     }
 }

@@ -1,10 +1,4 @@
-public enum CartResult
-{
-    Success,
-    ProductNotFound,
-    ItemNotFound,
-    NotEnoughStock
-}
+
 
 public enum OrderResult
 {

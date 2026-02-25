@@ -27,14 +27,14 @@ public class WishListController : ControllerBase
             return Unauthorized();
         }
 
-        var allWishItem = await _wishListItem.GetAllWishListItemAsync(userId);
+        var result = await _wishListItem.GetAllWishListItemAsync(userId);
 
-        if(allWishItem == null)
+        if(result == null)
         {
             return NotFound();
         }
 
-        return Ok(allWishItem);
+        return Ok(result);
     }
     [HttpPost("{productId}")]
 
@@ -72,6 +72,6 @@ public class WishListController : ControllerBase
             return BadRequest(new { Code = result.Error.Code, Message = result.Error.Message });
         }
 
-        return Ok(result.Value);
+        return NoContent();
     }
 }

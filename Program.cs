@@ -14,6 +14,10 @@ var config = builder.Configuration;
 
 // Здесь добавляются сервисы, например, контроллеры
 builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.SuppressAsyncSuffixInActionNames = false;
+});
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));

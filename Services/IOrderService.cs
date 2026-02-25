@@ -4,6 +4,6 @@ namespace MyFirstProject.Services;
 
 public interface IOrderService
 {
-    Task<OrderDto?> GetOrderAsync(string userId, int id);
-    Task<(OrderResult Status, OrderDto? orderDto)> CreateOrderFromCartAsync(string userId);
+    Task<Result<OrderDto>> GetOrderAsync(string userId, int id);
+    Task<Result<OrderDto>> CreateOrderFromCartAsync(string userId);
 }

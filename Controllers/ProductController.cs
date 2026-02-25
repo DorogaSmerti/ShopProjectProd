@@ -34,38 +34,38 @@ public class ProductsController : ControllerBase
     [HttpGet("{productId}")]
     public async Task<IActionResult> GetProductByIdAsync(int productId)
     {
-        var product = await _productService.GetProductByIdAsync(productId);
+        var result = await _productService.GetProductByIdAsync(productId);
 
-        if (!product.IsSuccess)
+        if (!result.IsSuccess)
         {
-            return NotFound(product.Error);
+            return NotFound(result.Error);
         }
 
-        return Ok(product.Value);
+        return Ok(result.Value);
     }
 
     [HttpPost]
     [Authorize(Roles = "Manager")]
     public async Task<IActionResult> CreateProduct([FromBody] CreateProductDto createProductDto)
     {
-        var newProduct = await _productService.CreateProductAsync(createProductDto);
+        var result = await _productService.CreateProductAsync(createProductDto);
 
-        if (!newProduct.IsSuccess)
+        if (!result.IsSuccess)
         {
-            return BadRequest(newProduct.Error);
+            return BadRequest(result.Error);
         }
-        return CreatedAtAction(nameof(GetProductByIdAsync), new { productId = newProduct.Value.Id }, newProduct);
+        return CreatedAtAction(nameof(GetProductByIdAsync), new { productId = result.Value.Id }, result.Value);
     }
 
     [HttpPatch("{productId}")]
     [Authorize(Roles = "Manager")]
     public async Task<IActionResult> PatchProduct(int productId, [FromBody] ProductDto newProductDto)
     {
-        var patchedProduct = await _productService.PatchProductAsync(productId, newProductDto);
+        var result = await _productService.PatchProductAsync(productId, newProductDto);
 
-        if (!patchedProduct.IsSuccess)
+        if (!result.IsSuccess)
         {
-            return BadRequest(patchedProduct.Error);
+            return BadRequest(result.Error);
         }
 
         string cacheKey = $"product_{productId}";
@@ -78,11 +78,11 @@ public class ProductsController : ControllerBase
     [Authorize(Roles = "Manager")]
     public async Task<IActionResult> DeleteProduct(int productId)
     {
-        var deleteProduct = await _productService.DeleteProductAsync(productId);
+        var result = await _productService.DeleteProductAsync(productId);
 
-        if(!deleteProduct.IsSuccess)
+        if(!result.IsSuccess)
         {
-            return NotFound(deleteProduct.Error);
+            return NotFound(result.Error);
         }
 
         return NoContent();

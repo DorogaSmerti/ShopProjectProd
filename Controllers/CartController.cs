@@ -23,49 +23,39 @@ public class CartController : ControllerBase
     public async Task<IActionResult> GetCartAsync()
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (string.IsNullOrEmpty(userId))
-        {
-            return Unauthorized();
-        }  
 
         var cart = await _cartServices.GetCartAsync(userId);
-        return Ok(cart);
+
+        if (!cart.IsSuccess)
+        {
+            return BadRequest(cart.Error);
+        }
+        return Ok(cart.Value);
     }
 
     [HttpPost]
     public async Task<IActionResult> AddToCartAsync([FromBody] AddToCartDto addToCartDto)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (string.IsNullOrEmpty(userId))
-        {
-            return Unauthorized();
-        }          
+     
         var cart = await _cartServices.AddToCartAsync(userId, addToCartDto.ProductId, addToCartDto.Quantity);
 
-        if (cart.cartResult == CartResult.ProductNotFound)
+        if (!cart.IsSuccess)
         {
-            return NotFound(new { message = "Товар не найден" });
+            return BadRequest(cart.Error);
         }
-        if (cart.cartResult ==  CartResult.NotEnoughStock)
-        {
-            return BadRequest(new { message = "Недостаточно товара на складе" });
-        }
-        return Ok(new { message = "Товар добавлен в корзину", cart.cartItemDto});
+        return Ok(new { message = "Товар добавлен в корзину", cart.Value});
     }
     [HttpDelete("{cartItemId}")]
     public async Task<IActionResult> DeleteFromCartAsync(int cartItemId)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (string.IsNullOrEmpty(userId))
-        {
-            return Unauthorized();
-        }  
                
         var cart = await _cartServices.DeleteFromCartAsync(userId, cartItemId);
 
-        if (cart == CartResult.ItemNotFound)
+        if (!cart.IsSuccess)
         {
-            return NotFound(new { message = "Товар не найден в корзине" });
+            return BadRequest(cart.Error);
         }
         return NoContent();
     }
@@ -73,25 +63,12 @@ public class CartController : ControllerBase
     public async Task<IActionResult> UpdateQuantityAsync(int cartItemId, [FromBody] ChangeQuantityDto changeQuantityDto)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (string.IsNullOrEmpty(userId))
-        {
-            return Unauthorized();
-        }          
+      
         var cart = await _cartServices.UpdateQuantityAsync(userId, cartItemId, changeQuantityDto.Quantity);
 
-        if (cart == CartResult.ProductNotFound)
+        if (!cart.IsSuccess)
         {
-            return NotFound(new { message = "Товар не найден" });
-        }
-
-        if (cart == CartResult.ItemNotFound)
-        {
-            return NotFound(new { message = "Товар не найден в корзине" });
-        }
-
-        if (cart == CartResult.NotEnoughStock)
-        {
-            return BadRequest(new { message = "Недостаточно товара на складе" });
+            return BadRequest(cart.Error);
         }
 
         return NoContent();

@@ -28,12 +28,12 @@ public class OrderController : ControllerBase
         }
         var order = await _orderService.GetOrderAsync(userId, id);
 
-        if (order == null)
+        if (!order.IsSuccess)
         {
-            return NotFound();
+            return NotFound(order.Error);
         }
 
-        return Ok(order);
+        return Ok(order.Value);
     }
 
     [HttpPost]
@@ -47,20 +47,12 @@ public class OrderController : ControllerBase
 
         var result = await _orderService.CreateOrderFromCartAsync(userId);
 
-        if (result.Status == OrderResult.ItemNotFound)
+        if (!result.IsSuccess)
         {
-            return NotFound("Предмет не найден в корзине");
+            return BadRequest(result.Error);
         }
-        if (result.Status == OrderResult.ProductNotFound)
-        {
-            return BadRequest(new { message = "Товар не найден" });
-        }
-
-        if (result.Status == OrderResult.NotEnoughStock)
-        {
-            return BadRequest(new { message = "Недостаточно товара на складе" });
-        }
-        return CreatedAtAction(nameof(GetOrderAsync), new {id = result.orderDto.Id}, result.orderDto);
+        
+        return CreatedAtAction(nameof(GetOrderAsync), new {id = result.Value.Id}, result.Value);
     }
 } 
 

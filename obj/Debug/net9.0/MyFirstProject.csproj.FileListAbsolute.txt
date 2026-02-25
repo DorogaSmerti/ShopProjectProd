@@ -344,3 +344,4 @@ D:\All\csharp\MyFirstProject\bin\Debug\net9.0\Microsoft.Extensions.Caching.Stack
 D:\All\csharp\MyFirstProject\bin\Debug\net9.0\Pipelines.Sockets.Unofficial.dll
 D:\All\csharp\MyFirstProject\bin\Debug\net9.0\StackExchange.Redis.dll
 D:\All\csharp\MyFirstProject\bin\Debug\net9.0\System.Diagnostics.DiagnosticSource.dll
+D:\All\csharp\MyFirstProject\obj\Debug\net9.0\MyFirstProject.sourcelink.json

@@ -45,7 +45,7 @@ public class ProductService : IProductService
 
         if (product == null)
         {
-            return Result<ProductDto>.Failure(DomainErrors.Product.NotFound);
+            return Result<ProductDto>.Failure(DomainErrors.Product.ProductNotFound);
         }
 
         var productDto = new ProductDto
@@ -110,7 +110,7 @@ public class ProductService : IProductService
 
         if (product == null)
         {
-            return Result<ProductDto>.Failure(DomainErrors.Product.NotFound);
+            return Result<ProductDto>.Failure(DomainErrors.Product.ProductNotFound);
         }
 
         product.Name = newProductDto.Name;
@@ -147,7 +147,7 @@ public class ProductService : IProductService
 
         if (product == null)
         {
-            return Result<bool>.Failure(DomainErrors.Product.NotFound);
+            return Result<bool>.Failure(DomainErrors.Product.ProductNotFound);
         }
 
         _unitOfWork.Products.DeleteProduct(product);
