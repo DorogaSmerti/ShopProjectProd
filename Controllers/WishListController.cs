@@ -9,7 +9,7 @@ namespace MyFirstProject.Controllers;
 [Route("api/[controller]")]
 [Authorize]
 
-public class WishListController : ControllerBase
+public class WishListController : ApiControllerBase
 {
     private readonly IWishListItemService _wishListItem;
 
@@ -22,35 +22,27 @@ public class WishListController : ControllerBase
     public async Task<IActionResult> GetAllWishListItemAsync()
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (string.IsNullOrEmpty(userId))
-        {
-            return Unauthorized();
-        }
 
         var result = await _wishListItem.GetAllWishListItemAsync(userId);
 
-        if(result == null)
+        if(!result.IsSuccess)
         {
-            return NotFound();
+            return HandleFailure(result.Error);
         }
 
-        return Ok(result);
+        return Ok(result.Value);
     }
     [HttpPost("{productId}")]
 
     public async Task<IActionResult> AddItemToWishListAsync(int productId)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (string.IsNullOrEmpty(userId))
-        {
-            return Unauthorized();
-        }
 
         var result = await _wishListItem.AddItemToWishListAsync(productId, userId);
 
         if (!result.IsSuccess)
         {
-            return BadRequest(result.Error);
+            return HandleFailure(result.Error);
         }
 
         return Ok(result.Value);
@@ -60,16 +52,12 @@ public class WishListController : ControllerBase
     public async Task<IActionResult> DeleteItemFromWishListAsync(int id)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (string.IsNullOrEmpty(userId))
-        {
-            return Unauthorized();
-        }
 
         var result = await _wishListItem.DeleteItemFromWishListAsync(id, userId);
 
         if (!result.IsSuccess)
         {
-            return BadRequest(new { Code = result.Error.Code, Message = result.Error.Message });
+            return HandleFailure(result.Error);
         }
 
         return NoContent();

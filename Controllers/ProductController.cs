@@ -8,7 +8,7 @@ namespace MyFirstProject.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ProductsController : ControllerBase
+public class ProductsController : ApiControllerBase
 {
     private readonly IProductService _productService;
     private readonly IDistributedCache _cache;
@@ -25,7 +25,7 @@ public class ProductsController : ControllerBase
 
         if(!product.IsSuccess)
         {
-            return BadRequest(product.Error);
+            return HandleFailure(product.Error);
         }
 
         return Ok(product.Value);
@@ -38,7 +38,7 @@ public class ProductsController : ControllerBase
 
         if (!result.IsSuccess)
         {
-            return NotFound(result.Error);
+            return HandleFailure(result.Error);
         }
 
         return Ok(result.Value);
@@ -52,7 +52,7 @@ public class ProductsController : ControllerBase
 
         if (!result.IsSuccess)
         {
-            return BadRequest(result.Error);
+            return HandleFailure(result.Error);
         }
         return CreatedAtAction(nameof(GetProductByIdAsync), new { productId = result.Value.Id }, result.Value);
     }
@@ -65,7 +65,7 @@ public class ProductsController : ControllerBase
 
         if (!result.IsSuccess)
         {
-            return BadRequest(result.Error);
+            return HandleFailure(result.Error);
         }
 
         string cacheKey = $"product_{productId}";
@@ -82,7 +82,7 @@ public class ProductsController : ControllerBase
 
         if(!result.IsSuccess)
         {
-            return NotFound(result.Error);
+            return HandleFailure(result.Error);
         }
 
         return NoContent();

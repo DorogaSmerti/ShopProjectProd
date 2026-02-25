@@ -11,11 +11,16 @@ public class ReviewService : IReviewService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<List<ReviewsDto>> GetReviewsForProductAsync(ReviewQueryParameters parameters, int productId)
+    public async Task<Result<List<ReviewsDto>>> GetReviewsForProductAsync(ReviewQueryParameters parameters, int productId)
     {
         var reviews = await _unitOfWork.Reviews.GetReviewsAsync(parameters, productId);
 
-        return reviews.Select(r => new ReviewsDto
+        if (reviews == null)
+        {
+            return Result<List<ReviewsDto>>.Failure(DomainErrors.Review.ReviewNotFound);
+        }
+
+        var reviewsDto = reviews.Select(r => new ReviewsDto
         {
             Id = r.Id,
             Rating = r.Rating,
@@ -23,8 +28,10 @@ public class ReviewService : IReviewService
             Body = r.Body,
             CreateAt = r.CreateAt
         }).ToList();
+
+        return Result<List<ReviewsDto>>.Success(reviewsDto);
     }
-    public async Task<ReviewsDto?> AddReviewAsync(int productId, string userId, CreateReviewDto createReviewDto)
+    public async Task<Result<ReviewsDto>> AddReviewAsync(int productId, string userId, CreateReviewDto createReviewDto)
     {
         var review = new Review
         {
@@ -40,26 +47,28 @@ public class ReviewService : IReviewService
 
         var user = await _unitOfWork.Users.GetUserByIdAsync(userId);
 
-        return new ReviewsDto
+        var result = new ReviewsDto
         {
             Id = review.Id,
             Username = user?.UserName ?? "Аноним",
             Body = review.Body,
             Rating = review.Rating,
         };
+
+        return Result<ReviewsDto>.Success(result);
     }
 
-    public async Task<bool> DeleteReviewAsync(int reviewId, string userId)
+    public async Task<Result<bool>> DeleteReviewAsync(int reviewId, string userId)
     {
         var review = await _unitOfWork.Reviews.GetReviewAsync(reviewId, userId);
 
         if (review == null)
         {
-            return false;
+            return Result<bool>.Failure(DomainErrors.Review.ReviewNotFound);
         }
 
         _unitOfWork.Reviews.DeleteReview(review);
         await _unitOfWork.CompleteAsync();
-        return true;
+        return Result<bool>.Success(true);
     }
 }

@@ -10,7 +10,7 @@ namespace MyFirstProject.Controllers;
 [ApiController]
 [Route("api/product/{productId}/reviews")]
 [Authorize]
-public class ReviewController : ControllerBase
+public class ReviewController : ApiControllerBase
 {
     private readonly IReviewService _reviewService;
 
@@ -22,38 +22,40 @@ public class ReviewController : ControllerBase
     [HttpGet()]
     public async Task<IActionResult> GetReviewsForProductAsync([FromQuery]ReviewQueryParameters parameters ,int productId)
     {
-        var reviews = await _reviewService.GetReviewsForProductAsync(parameters, productId);
+        var result = await _reviewService.GetReviewsForProductAsync(parameters, productId);
 
-        return Ok(reviews);
+        if (!result.IsSuccess)
+        {
+            return HandleFailure(result.Error);
+        }
+
+        return Ok(result.Value);
     }
 
     [HttpPost]
     public async Task<IActionResult> AddReviewAsync(int productId, CreateReviewDto createReviewDto)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (string.IsNullOrEmpty(userId))
-        {
-            return Unauthorized();
-        }
 
-        var review = await _reviewService.AddReviewAsync(productId, userId, createReviewDto);
-        return Ok(review);
+        var result = await _reviewService.AddReviewAsync(productId, userId, createReviewDto);
+
+        if (!result.IsSuccess)
+        {
+            return HandleFailure(result.Error);
+        }
+        return Ok(result.Value);
     }
 
     [HttpDelete]
     public async Task<IActionResult> DeleteReview(int reviewId)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (string.IsNullOrEmpty(userId))
-        {
-            return Unauthorized();
-        }
 
         var review = await _reviewService.DeleteReviewAsync(reviewId, userId);
 
-        if (review == false)
+        if (!review.IsSuccess)
         {
-            return NotFound();
+            return HandleFailure(review.Error);
         }
         return NoContent();
     }

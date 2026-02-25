@@ -9,7 +9,7 @@ namespace MyFirstProject.Controllers;
 [Route("api/[controller]")]
 [Authorize]
 
-public class OrderController : ControllerBase
+public class OrderController : ApiControllerBase
 {
     private readonly IOrderService _orderService;
 
@@ -22,15 +22,12 @@ public class OrderController : ControllerBase
     public async Task<IActionResult> GetOrderAsync(int id)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (string.IsNullOrEmpty(userId))
-        {
-            return Unauthorized();
-        }
+
         var order = await _orderService.GetOrderAsync(userId, id);
 
         if (!order.IsSuccess)
         {
-            return NotFound(order.Error);
+            return HandleFailure(order.Error);
         }
 
         return Ok(order.Value);
@@ -40,16 +37,12 @@ public class OrderController : ControllerBase
     public async Task<IActionResult> CreateOrderFromCartAsync()
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (string.IsNullOrEmpty(userId))
-        {
-            return Unauthorized();
-        }  
 
         var result = await _orderService.CreateOrderFromCartAsync(userId);
 
         if (!result.IsSuccess)
         {
-            return BadRequest(result.Error);
+            return HandleFailure(result.Error);
         }
         
         return CreatedAtAction(nameof(GetOrderAsync), new {id = result.Value.Id}, result.Value);

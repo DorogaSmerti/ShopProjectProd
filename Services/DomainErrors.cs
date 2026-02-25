@@ -31,4 +31,10 @@ public static class DomainErrors
         public static readonly Error NotEnoughStock = new("Order.NotEnoughStock", "Not enough stock for one or more items in the cart");
         public static readonly Error OrderCreationFailed = new("Order.OrderCreationFailed", "Failed to create order");
     }
+
+    public static class Review
+    {
+        public static readonly Error ProductNotFound = new("Review.ProductNotFound", "Product not found");
+        public static readonly Error ReviewNotFound = new("Review.ReviewNotFound", "Review not found");
+    }
 }

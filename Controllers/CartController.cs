@@ -10,7 +10,7 @@ namespace MyFirstProject.Controllers;
 [Route("api/[controller]")]
 [Authorize]
 
-public class CartController : ControllerBase
+public class CartController : ApiControllerBase
 {
     private readonly ICartService _cartServices;
 
@@ -28,7 +28,7 @@ public class CartController : ControllerBase
 
         if (!cart.IsSuccess)
         {
-            return BadRequest(cart.Error);
+            return HandleFailure(cart.Error);
         }
         return Ok(cart.Value);
     }
@@ -42,9 +42,10 @@ public class CartController : ControllerBase
 
         if (!cart.IsSuccess)
         {
-            return BadRequest(cart.Error);
+            return HandleFailure(cart.Error);
         }
-        return Ok(new { message = "Товар добавлен в корзину", cart.Value});
+
+        return CreatedAtAction(nameof(GetCartAsync), new { userId = userId }, cart.Value);
     }
     [HttpDelete("{cartItemId}")]
     public async Task<IActionResult> DeleteFromCartAsync(int cartItemId)
@@ -55,7 +56,7 @@ public class CartController : ControllerBase
 
         if (!cart.IsSuccess)
         {
-            return BadRequest(cart.Error);
+            return HandleFailure(cart.Error);
         }
         return NoContent();
     }
@@ -68,7 +69,7 @@ public class CartController : ControllerBase
 
         if (!cart.IsSuccess)
         {
-            return BadRequest(cart.Error);
+            return HandleFailure(cart.Error);
         }
 
         return NoContent();

@@ -9,17 +9,19 @@ public class WishListItemService : IWishListItemService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<List<WishListItemDto>> GetAllWishListItemAsync(string userId)
+    public async Task<Result<List<WishListItemDto>>> GetAllWishListItemAsync(string userId)
     {
         var wishListItems = await _unitOfWork.WishListItem.GetAllWishItemAsync(userId);
 
-        return wishListItems.Select(p => new WishListItemDto
+        var result = wishListItems.Select(p => new WishListItemDto
         {
             Id = p.Id,
             UserId = p.UserId,
             ProductId = p.ProductId,
             CreateAt = p.CreateAt
         }).ToList();
+
+        return Result<List<WishListItemDto>>.Success(result);
     }
 
     public async Task<Result<WishListItemDto>> AddItemToWishListAsync(int productId, string userId)
