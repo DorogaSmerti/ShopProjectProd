@@ -13,5 +13,6 @@ appsettings.Development.json
 *.db
 *.mdf
 *.ldf
+*.md
 
 *.log
