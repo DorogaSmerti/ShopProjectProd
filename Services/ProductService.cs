@@ -60,7 +60,7 @@ public class ProductService : IProductService
                 Id = r.Id,
                 Body = r.Body,
                 Rating = r.Rating,
-                CreateAt = r.CreateAt,
+                CreatedAt = r.CreateAt,
                 Username = r.User?.UserName ?? "Аноним",
             }).ToList()
         };
@@ -134,7 +134,7 @@ public class ProductService : IProductService
                 Id = r.Id,
                 Body = r.Body,
                 Rating = r.Rating,
-                CreateAt = r.CreateAt,
+                CreatedAt = r.CreateAt,
                 Username = r.User?.UserName ?? "Аноним",
             }).ToList()
         };

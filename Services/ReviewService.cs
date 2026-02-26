@@ -26,7 +26,7 @@ public class ReviewService : IReviewService
             Rating = r.Rating,
             Username = r.User?.UserName ?? "Аноним",
             Body = r.Body,
-            CreateAt = r.CreateAt
+            CreatedAt = r.CreateAt
         }).ToList();
 
         return Result<List<ReviewsDto>>.Success(reviewsDto);

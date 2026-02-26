@@ -2,19 +2,19 @@ namespace MyFirstProject.Models;
 
 public class UsersDTO
 {
-    public string Id { get; set; }
-    public string UserName { get; set; }
-    public string Email { get; set; }
-    public IList<string> Roles { get; set; }
+    public required string Id { get; set; }
+    public required string UserName { get; set; }
+    public required string Email { get; set; }
+    public required IList<string> Roles { get; set; }
 }
 
 public class ChangeRoleDto
 {
-    public string UserName { get; set; }
-    public string Role { get; set; }
+    public required string UserName { get; set; }
+    public required string Role { get; set; }
 }
 
 public class DeleteUserDto
 {
-    public string UserId { get; set; }
+    public required string UserId { get; set; }
 }
