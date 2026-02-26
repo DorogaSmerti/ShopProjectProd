@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Microsoft.Extensions.Caching.Distributed;
+using MyFirstProject.Constants;
 using MyFirstProject.Models;
 
 namespace MyFirstProject.Services;
@@ -32,9 +33,8 @@ public class ProductService : IProductService
 
     public async Task<Result<ProductDto>> GetProductByIdAsync(int id)
     {
-        string cacheKey = $"product_{id}";
 
-        var cachedProduct = await _cache.GetStringAsync(cacheKey);
+        var cachedProduct = await _cache.GetStringAsync(CachedKeys.Product(id));
 
         if (!string.IsNullOrEmpty(cachedProduct))
         {
@@ -72,7 +72,7 @@ public class ProductService : IProductService
 
         var serializedProduct = JsonSerializer.Serialize(productDto);
 
-        await _cache.SetStringAsync(cacheKey, serializedProduct, cacheOptions);
+        await _cache.SetStringAsync(CachedKeys.Product(id), serializedProduct, cacheOptions);
         
         return Result<ProductDto>.Success(productDto);
     }
@@ -138,6 +138,9 @@ public class ProductService : IProductService
                 Username = r.User?.UserName ?? "Аноним",
             }).ToList()
         };
+
+        await _cache.RemoveAsync(CachedKeys.Product(id));
+
         return Result<ProductDto>.Success(productDto);
     } 
 
@@ -152,6 +155,9 @@ public class ProductService : IProductService
 
         _unitOfWork.Products.DeleteProduct(product);
         await _unitOfWork.CompleteAsync();
+
+        await _cache.RemoveAsync(CachedKeys.Product(id));
+
         return Result<bool>.Success(true);
     }
 }

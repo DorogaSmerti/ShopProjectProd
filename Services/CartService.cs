@@ -1,3 +1,6 @@
+using System.Text.Json;
+using Microsoft.Extensions.Caching.Distributed;
+using MyFirstProject.Constants;
 using MyFirstProject.Models;
 
 namespace MyFirstProject.Services;
@@ -5,13 +8,22 @@ namespace MyFirstProject.Services;
 public class CartService : ICartService
 {
     private readonly IUnitOfWork _unitOfWork;
-    public CartService(IUnitOfWork unitOfWork)
+    private readonly IDistributedCache _cache;
+    public CartService(IUnitOfWork unitOfWork, IDistributedCache cache)
     {
         _unitOfWork = unitOfWork;
+        _cache = cache;
     }
 
     public async Task<Result<List<CartItemDto>>> GetCartAsync(string userId)
     {
+        var cachedCart = await _cache.GetStringAsync(CachedKeys.Cart(userId));
+
+        if (!string.IsNullOrWhiteSpace(cachedCart))
+        {
+            return Result<List<CartItemDto>>.Success(JsonSerializer.Deserialize<List<CartItemDto>>(cachedCart));
+        }
+
         var cartItem = await _unitOfWork.CartItem.GetCartAsync(userId);
 
         if (cartItem == null || !cartItem.Any())
@@ -27,6 +39,15 @@ public class CartService : ICartService
             UserId = item.UserId,
             ProductId = item.ProductId
         }).ToList();
+
+        var cacheOptions = new DistributedCacheEntryOptions
+        {
+            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7)
+        };
+
+        var serializedCart = JsonSerializer.Serialize(cartDto);
+
+        await _cache.SetStringAsync(CachedKeys.Cart(userId), serializedCart, cacheOptions);
         
         return Result<List<CartItemDto>>.Success(cartDto);
     }
@@ -76,6 +97,9 @@ public class CartService : ICartService
             UserId = itemToReturn.UserId,
             ProductId = itemToReturn.ProductId
         };
+
+        await _cache.RemoveAsync(CachedKeys.Cart(userId));
+
         return Result<CartItemDto>.Success(resultDto);
     }
 
@@ -90,6 +114,9 @@ public class CartService : ICartService
 
         _unitOfWork.CartItem.DeleteFromCart(cartItem);
         await _unitOfWork.CompleteAsync();
+
+        await _cache.RemoveAsync(CachedKeys.Cart(userId));
+
         return Result<bool>.Success(true);
     }
     
@@ -123,6 +150,9 @@ public class CartService : ICartService
             cartItem.QuantityCartItem = quantity;
         }
         await _unitOfWork.CompleteAsync();
+
+        await _cache.RemoveAsync(CachedKeys.Cart(userId));
+
         return Result<bool>.Success(true);
     }
 }

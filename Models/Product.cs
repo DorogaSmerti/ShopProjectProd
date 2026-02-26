@@ -8,5 +8,5 @@ public class Product
     public required decimal Price { get; set; }
     public required int Stock { get; set; }
     public List<Review> Reviews{ get; set; } = new();
-    public required DateTime CreateAt{ get; set; }
+    public DateTime CreateAt{ get; set; }
 }
