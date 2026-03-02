@@ -1,0 +1,2 @@
+2026-03-01 16:32:39.081 +02:00 [WRN] Action failed. Context: Result`1[MyFirstProject.Models.ProductDto], error.Code, context
+2026-03-01 16:34:41.081 +02:00 [WRN] Action failed. ErrorCode: Product.NotFound, Context: {"IsSuccess":false,"Value":"The property accessor threw an exception: InvalidOperationException","Error":{"Code":"Product.NotFound","Message":"Product not found","$type":"Error"},"$type":"Result`1"}

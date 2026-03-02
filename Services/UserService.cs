@@ -13,52 +13,53 @@ public class UserService : IUserService
         _userManager = userManager;
     }
 
-    public async Task<List<IdentityUser>> GetAllUsersAsync()
+    public async Task<Result<List<IdentityUser>>> GetAllUsersAsync()
     {
-        return await _userManager.Users.ToListAsync();
+        var result = await _userManager.Users.ToListAsync();
+        return Result<List<IdentityUser>>.Success(result);
     }
 
-    public async Task<List<string>?> GetUserRolesAsync(string userId)
+    public async Task<Result<List<string>?>> GetUserRolesAsync(string userId)
     {
         var user = await _userManager.FindByIdAsync(userId);
         if (user == null)
         {
-            return null;
+            return Result<List<string>?>.Failure(DomainErrors.User.UserNotFound);
         }
         var roles = await _userManager.GetRolesAsync(user);
-        return roles.ToList();
+        return Result<List<string>?>.Success(roles.ToList());
     }
 
-    public async Task<(UserResult Status, IdentityResult? Errors)> ChangeRoleAsync(ChangeRoleDto changeRoleDto)
+    public async Task<Result<IdentityUser>> ChangeRoleAsync(ChangeRoleDto changeRoleDto)
     {
-        var user = await _userManager.FindByNameAsync(changeRoleDto.UserName);
+        var user = await _userManager.FindByIdAsync(changeRoleDto.UserId);
         if (user == null)
         {
-            return (UserResult.UserNotFound, null);
+            return Result<IdentityUser>.Failure(DomainErrors.User.UserNotFound);
         }
 
         if (await _userManager.IsInRoleAsync(user, changeRoleDto.Role))
         {
-            return (UserResult.UserHasThisRole, null);
+            return Result<IdentityUser>.Failure(DomainErrors.User.UserHasThisRole);
         }
 
         var result = await _userManager.AddToRoleAsync(user, changeRoleDto.Role);
         if (result.Succeeded)
         {
-            return (UserResult.Success, null);
+            return Result<IdentityUser>.Success(user);
         }
-        return (UserResult.Failure, result);
+        return Result<IdentityUser>.Failure(DomainErrors.User.UserRoleChangeFailed);
     }
 
-    public async Task<UserResult> DeleteUserAsync(DeleteUserDto deleteUserDto)
+    public async Task<Result<UserResult>> DeleteUserAsync(DeleteUserDto deleteUserDto)
     {
         var user = await _userManager.FindByIdAsync(deleteUserDto.UserId);
         if (user == null)
         {
-            return UserResult.UserNotFound;
+            return Result<UserResult>.Failure(DomainErrors.User.UserNotFound);
         }
 
         await _userManager.DeleteAsync(user);
-        return UserResult.Success;
+        return Result<UserResult>.Success(UserResult.Success);
     }
 }

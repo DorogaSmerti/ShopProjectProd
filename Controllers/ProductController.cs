@@ -38,7 +38,7 @@ public class ProductsController : ApiControllerBase
 
         if (!result.IsSuccess)
         {
-            return HandleFailure(result.Error);
+            return HandleFailure(result.Error, result);
         }
 
         return Ok(result.Value);

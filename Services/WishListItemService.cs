@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Caching.Distributed;
+using MyFirstProject.Constants;
 
 namespace MyFirstProject.Services;
 
@@ -44,8 +45,10 @@ public class WishListItemService : IWishListItemService
             CreateAt = DateTime.UtcNow
         };
 
+        await _cache.RemoveAsync(CachedKeys.WishList(newWishListItem.Id));
+
         await _unitOfWork.WishListItem.AddItemToWishListAsync(newWishListItem);
-        await _unitOfWork.CompleteAsync();
+        await _unitOfWork.SaveChangesAsync();
 
         var wishListToReturn = new WishListItemDto{
             Id = newWishListItem.Id,
@@ -67,7 +70,7 @@ public class WishListItemService : IWishListItemService
         }
 
         _unitOfWork.WishListItem.DeleteItemFromWishList(itemOfWishList);
-        await _unitOfWork.CompleteAsync();
+        await _unitOfWork.SaveChangesAsync();
 
         var wishListToReturn = new WishListItemDto{
             Id = itemOfWishList.Id,

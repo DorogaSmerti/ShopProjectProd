@@ -87,7 +87,7 @@ public class CartService : ICartService
             itemToReturn = newCartItem;
         }
 
-        await _unitOfWork.CompleteAsync();
+        await _unitOfWork.SaveChangesAsync();
 
         var resultDto = new CartItemDto
         {
@@ -113,7 +113,7 @@ public class CartService : ICartService
         }
 
         _unitOfWork.CartItem.DeleteFromCart(cartItem);
-        await _unitOfWork.CompleteAsync();
+        await _unitOfWork.SaveChangesAsync();
 
         await _cache.RemoveAsync(CachedKeys.Cart(userId));
 
@@ -149,7 +149,7 @@ public class CartService : ICartService
         {
             cartItem.QuantityCartItem = quantity;
         }
-        await _unitOfWork.CompleteAsync();
+        await _unitOfWork.SaveChangesAsync();
 
         await _cache.RemoveAsync(CachedKeys.Cart(userId));
 

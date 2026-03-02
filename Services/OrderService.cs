@@ -1,4 +1,5 @@
 using MyFirstProject.Models;
+using Serilog;
 
 namespace MyFirstProject.Services;
 
@@ -93,9 +94,9 @@ public class OrderService : IOrderService
             
             _unitOfWork.CartItem.RemoveRangeFromCart(cartItems);
 
-            await _unitOfWork.CompleteAsync();
+            await _unitOfWork.SaveChangesAsync();
 
-            await _unitOfWork.CommitTransactionAsync();
+            await _unitOfWork.SaveChangesAndCommitAsync();
 
             var orderDto = new OrderDto
             {
@@ -118,7 +119,7 @@ public class OrderService : IOrderService
 
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Ошибка при создании заказа");
+            Log.Error(ex, "Ошибка при создании заказа");
             await _unitOfWork.RollbackTransactionAsync();
             return Result<OrderDto>.Failure(DomainErrors.Order.OrderCreationFailed);
         }

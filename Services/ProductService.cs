@@ -89,7 +89,7 @@ public class ProductService : IProductService
         };
 
         await _unitOfWork.Products.AddProduct(newProduct);
-        await _unitOfWork.CompleteAsync();
+        await _unitOfWork.SaveChangesAsync();
 
         var productDto = new ProductDto
         {
@@ -98,7 +98,6 @@ public class ProductService : IProductService
             Price = newProduct.Price,
             Description = newProduct.Description,
             Stock = newProduct.Stock,
-            Reviews = null
         };
 
         return Result<ProductDto>.Success(productDto);
@@ -120,7 +119,7 @@ public class ProductService : IProductService
 
         _unitOfWork.Products.UpdateProduct(product);
         
-        await _unitOfWork.CompleteAsync();
+        await _unitOfWork.SaveChangesAsync();
 
         var productDto = new ProductDto
         {
@@ -154,7 +153,7 @@ public class ProductService : IProductService
         }
 
         _unitOfWork.Products.DeleteProduct(product);
-        await _unitOfWork.CompleteAsync();
+        await _unitOfWork.SaveChangesAsync();
 
         await _cache.RemoveAsync(CachedKeys.Product(id));
 

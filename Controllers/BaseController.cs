@@ -1,6 +1,6 @@
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using MyFirstProject.Services;
+using Serilog;
 
 namespace MyFirstProject.Controllers;
 
@@ -8,8 +8,9 @@ namespace MyFirstProject.Controllers;
 [Route("api/[controller]")]
 public abstract class ApiControllerBase : ControllerBase
 {
-    protected IActionResult HandleFailure(Error error)
+    protected IActionResult HandleFailure(Error error, object? context = null)
     {
+        Log.Warning("Action failed. ErrorCode: {Code}, Context: {@context}", error.Code, context);
             return error.Code switch
         {
             var code when code.Contains("NotFound") => NotFound(error),

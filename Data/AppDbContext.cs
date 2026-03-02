@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using MyFirstProject.Models;
-using MyFirstProject.Services;
 
 namespace MyFirstProject.Data;
 

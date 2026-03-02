@@ -10,7 +10,7 @@ public class UsersDTO
 
 public class ChangeRoleDto
 {
-    public required string UserName { get; set; }
+    public required string UserId { get; set; }
     public required string Role { get; set; }
 }
 

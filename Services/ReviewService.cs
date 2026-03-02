@@ -1,5 +1,3 @@
-using Microsoft.Extensions.Caching.Distributed;
-using MyFirstProject.Constants;
 using MyFirstProject.Models;
 
 namespace MyFirstProject.Services;
@@ -45,7 +43,7 @@ public class ReviewService : IReviewService
         };
 
         await _unitOfWork.Reviews.AddReviewAsync(review);
-        await _unitOfWork.CompleteAsync();
+        await _unitOfWork.SaveChangesAsync();
 
         var user = await _unitOfWork.Users.GetUserByIdAsync(userId);
 
@@ -70,7 +68,7 @@ public class ReviewService : IReviewService
         }
 
         _unitOfWork.Reviews.DeleteReview(review);
-        await _unitOfWork.CompleteAsync();
+        await _unitOfWork.SaveChangesAsync();
 
         return Result<bool>.Success(true);
     }

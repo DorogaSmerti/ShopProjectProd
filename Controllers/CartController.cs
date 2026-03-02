@@ -1,8 +1,6 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Distributed;
-using MyFirstProject.Constants;
 using MyFirstProject.Models;
 using MyFirstProject.Services;
 

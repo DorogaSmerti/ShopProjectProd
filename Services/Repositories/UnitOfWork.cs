@@ -24,7 +24,7 @@ public class UnitOfWork : IUnitOfWork
         WishListItem = new WishListItemRepository(_context);
     }
 
-    public async Task<int> CompleteAsync()
+    public async Task<int> SaveChangesAsync()
     {
         return await _context.SaveChangesAsync();
     }
@@ -38,7 +38,7 @@ public class UnitOfWork : IUnitOfWork
         _currentTransaction = await _context.Database.BeginTransactionAsync();
     }
 
-    public async Task CommitTransactionAsync()
+    public async Task SaveChangesAndCommitAsync()
     {
         try
         {

@@ -1,6 +1,4 @@
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MyFirstProject.Services;
 using MyFirstProject.Models;
@@ -11,7 +9,7 @@ namespace MyFirstProject.Controllers;
 [ApiController]
 [Authorize(Roles = "Admin")]
 
-public class UserController : ControllerBase
+public class UserController : ApiControllerBase
 {
     private readonly IUserService _userService;
 
@@ -24,19 +22,19 @@ public class UserController : ControllerBase
     public async Task<IActionResult> GetAllUsers()
     {
         var users = await _userService.GetAllUsersAsync();
-        return Ok(users);
+        return Ok(users.Value);
     }
 
     [HttpGet("roles/{userId}")]
     public async Task<IActionResult> GetUserRoles(string userId)
     {
         var user = await _userService.GetUserRolesAsync(userId);
-        if (user == null)
+        if (!user.IsSuccess)
         {
-            return BadRequest(new {message = "Пользователь не найден"});
+            return HandleFailure(user.Error, user);
         }
 
-        return Ok(user);
+        return Ok(user.Value);
     }
 
     [HttpPost("roleChanger")]
@@ -44,19 +42,9 @@ public class UserController : ControllerBase
     {
         var result = await _userService.ChangeRoleAsync(changeRoleDto);
         
-        if (result.Status == UserResult.UserNotFound)
+        if (!result.IsSuccess)
         {
-            return BadRequest(new {message = "Пользователь не найден"});
-        }
-
-        if (result.Status == UserResult.UserHasThisRole)
-        {
-            return BadRequest(new {message = "Пользователь уже имеет эту роль"});
-        }
-
-        if (result.Status == UserResult.Failure)
-        {
-            return BadRequest(result.Errors);
+            return HandleFailure(result.Error, result);
         }
 
         return Ok(new {message = "Роль пользователя изменена"});
@@ -67,9 +55,9 @@ public class UserController : ControllerBase
     {
         var result = await _userService.DeleteUserAsync(deleteUserDto);
 
-        if (result == UserResult.UserNotFound)
+        if (!result.IsSuccess)
         {
-            return BadRequest(new {message = "Пользователь не найден"});
+            return HandleFailure(result.Error, result);
         }
 
         return Ok(new {message = "Пользователь удалён"});

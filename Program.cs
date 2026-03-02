@@ -8,8 +8,16 @@ using MyFirstProject.Data;
 using MyFirstProject.Services;
 using System.Text;
 using MyFirstProject.Middleware;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .WriteTo.Console()
+    .WriteTo.File("logs/log-.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
 var config = builder.Configuration;
 
 // Здесь добавляются сервисы, например, контроллеры

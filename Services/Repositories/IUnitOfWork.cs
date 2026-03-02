@@ -9,9 +9,9 @@ public interface IUnitOfWork
     IUsersRepository Users { get; }
     IWishListItemRepository WishListItem { get; }
 
-    Task<int> CompleteAsync();
+    Task<int> SaveChangesAsync();
     Task BeginTransactionAsync();
-    Task CommitTransactionAsync();
+    Task SaveChangesAndCommitAsync();
     Task RollbackTransactionAsync();
 }
 
