@@ -6,23 +6,25 @@ public class UnitOfWork : IUnitOfWork
 {
     private readonly AppDbContext _context;
     private IDbContextTransaction _currentTransaction;
-    public IProductRepository Products { get; private set; }
-    public ICartRepository CartItem { get; private set; }
-    public IOrderRepository Orders { get; private set; }
-    public IReviewRepository Reviews { get; private set; }
-    public IUsersRepository Users { get; private set; }
-    public IWishListItemRepository WishListItem {get; private set;}
 
     public UnitOfWork(AppDbContext context)
     {
         _context = context;
-        Products = new ProductRepository(_context);
+        Product = new ProductRepository(_context);
         CartItem = new CartRepository(_context);
         Orders = new OrderRepository(_context);
         Reviews = new ReviewRepository(_context);
         Users = new UsersRepository(_context);
         WishListItem = new WishListItemRepository(_context);
+        
     }
+
+    public IProductRepository Product {get;}
+    public ICartRepository CartItem { get; }
+    public IOrderRepository Orders { get; } 
+    public IReviewRepository Reviews { get; }
+    public IUsersRepository Users { get; }
+    public IWishListItemRepository WishListItem { get; }
 
     public async Task<int> SaveChangesAsync()
     {
@@ -38,7 +40,7 @@ public class UnitOfWork : IUnitOfWork
         _currentTransaction = await _context.Database.BeginTransactionAsync();
     }
 
-    public async Task SaveChangesAndCommitAsync()
+    public async Task CommitAsync()
     {
         try
         {

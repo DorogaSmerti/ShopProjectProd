@@ -43,6 +43,9 @@ public class OrderService : IOrderService
 
     public async Task<Result<OrderDto>> CreateOrderFromCartAsync(string userId)
     {
+        await _unitOfWork.BeginTransactionAsync();
+            try
+            {
         var cartItems = await _unitOfWork.CartItem.GetCartAsync(userId);
 
         if (cartItems == null || cartItems.Count == 0)
@@ -50,10 +53,6 @@ public class OrderService : IOrderService
                 await _unitOfWork.RollbackTransactionAsync();
                 return Result<OrderDto>.Failure(DomainErrors.Order.CartEmpty);
             }
-
-        await _unitOfWork.BeginTransactionAsync();
-        try
-        {
             decimal totalPrice = 0;
             var orderItems = new List<OrderItem>();
 
@@ -94,9 +93,7 @@ public class OrderService : IOrderService
             
             _unitOfWork.CartItem.RemoveRangeFromCart(cartItems);
 
-            await _unitOfWork.SaveChangesAsync();
-
-            await _unitOfWork.SaveChangesAndCommitAsync();
+            await _unitOfWork.CommitAsync();
 
             var orderDto = new OrderDto
             {
@@ -105,11 +102,11 @@ public class OrderService : IOrderService
                 Status = newOrder.Status,
                 TotalAmount = totalPrice,
                 UserId = newOrder.UserId,
-                OrderItems = cartItems.Select(item => new OrderItemDto
+                OrderItems = newOrder.OrderItems.Select(item => new OrderItemDto
                 {
-                    Id = item.CartItemId,
-                    Quantity = item.QuantityCartItem,
-                    Price = item.Product.Price,
+                    Id = item.Id,
+                    Quantity = item.Quantity,
+                    Price = item.Price,
                     ProductId = item.ProductId
                 }).ToList()
             };

@@ -2,7 +2,7 @@ using MyFirstProject.Repositories;
 
 public interface IUnitOfWork
 {
-    IProductRepository Products { get; }
+    IProductRepository Product { get; }
     ICartRepository CartItem { get; }
     IOrderRepository Orders { get; }
     IReviewRepository Reviews { get; }
@@ -11,7 +11,7 @@ public interface IUnitOfWork
 
     Task<int> SaveChangesAsync();
     Task BeginTransactionAsync();
-    Task SaveChangesAndCommitAsync();
+    Task CommitAsync();
     Task RollbackTransactionAsync();
 }
 

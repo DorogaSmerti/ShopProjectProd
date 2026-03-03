@@ -17,7 +17,7 @@ public class ProductService : IProductService
 
     public async Task<Result<List<ProductDto>>> GetAllProductAsync(ProductQueryParameters parameters)
     {
-        var products = await _unitOfWork.Products.GetAllProduct(parameters);
+        var products = await _unitOfWork.Product.GetAllProduct(parameters);
         
         var result = products.Select(p => new ProductDto
         {
@@ -41,7 +41,7 @@ public class ProductService : IProductService
             return Result<ProductDto>.Success(JsonSerializer.Deserialize<ProductDto>(cachedProduct));
         }
 
-        var product = await _unitOfWork.Products.GetByIdProduct(id);
+        var product = await _unitOfWork.Product.GetByIdProduct(id);
 
         if (product == null)
         {
@@ -88,7 +88,7 @@ public class ProductService : IProductService
             CreateAt = DateTime.UtcNow
         };
 
-        await _unitOfWork.Products.AddProduct(newProduct);
+        await _unitOfWork.Product.AddProduct(newProduct);
         await _unitOfWork.SaveChangesAsync();
 
         var productDto = new ProductDto
@@ -105,7 +105,7 @@ public class ProductService : IProductService
 
     public async Task<Result<ProductDto>> PatchProductAsync(int id, ProductDto newProductDto)
     {
-        var product = await _unitOfWork.Products.GetByIdProduct(id);
+        var product = await _unitOfWork.Product.GetByIdProduct(id);
 
         if (product == null)
         {
@@ -117,7 +117,7 @@ public class ProductService : IProductService
         product.Stock = newProductDto.Stock;
         product.Description = newProductDto.Description;
 
-        _unitOfWork.Products.UpdateProduct(product);
+        _unitOfWork.Product.UpdateProduct(product);
         
         await _unitOfWork.SaveChangesAsync();
 
@@ -145,14 +145,14 @@ public class ProductService : IProductService
 
     public async Task<Result<bool>> DeleteProductAsync(int id)
     {
-        var product = await _unitOfWork.Products.GetByIdProduct(id);
+        var product = await _unitOfWork.Product.GetByIdProduct(id);
 
         if (product == null)
         {
             return Result<bool>.Failure(DomainErrors.Product.ProductNotFound);
         }
 
-        _unitOfWork.Products.DeleteProduct(product);
+        _unitOfWork.Product.DeleteProduct(product);
         await _unitOfWork.SaveChangesAsync();
 
         await _cache.RemoveAsync(CachedKeys.Product(id));

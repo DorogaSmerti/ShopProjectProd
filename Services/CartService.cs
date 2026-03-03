@@ -54,7 +54,7 @@ public class CartService : ICartService
 
     public async Task<Result<CartItemDto>> AddToCartAsync(string userId, int productId, int quantity)
     {
-        var product = await _unitOfWork.Products.GetByIdProduct(productId);
+        var product = await _unitOfWork.Product.GetByIdProduct(productId);
 
         if (product == null)
         {
@@ -129,7 +129,7 @@ public class CartService : ICartService
             return Result<bool>.Failure(DomainErrors.Cart.CartNotFound);
         }
 
-        var product = await _unitOfWork.Products.GetByIdProduct(cartItem.ProductId);
+        var product = await _unitOfWork.Product.GetByIdProduct(cartItem.ProductId);
 
         if (product == null)
         {
