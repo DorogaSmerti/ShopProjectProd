@@ -9,6 +9,7 @@ using MyFirstProject.Services;
 using System.Text;
 using MyFirstProject.Middleware;
 using Serilog;
+using MyFirstProject.BackgroundServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -120,6 +121,8 @@ builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IWishListItemService, WishListItemService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddSingleton<IRateLimitStore, RateLimitStore>();
+builder.Services.AddHostedService<RateLimitCleaner>();
 
 builder.Services.AddStackExchangeRedisCache(option =>
 {
@@ -158,13 +161,16 @@ builder.Services.AddSwaggerGen(options =>
 });
 var app = builder.Build();
 
-app.UseMiddleware<ExceptionMiddleware>();
-
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<RateLimitingMiddleware>();
+app.UseMiddleware<DecoratorMiddleware>();
+app.UseMiddleware<LoggerMiddleware>();
+app.UseMiddleware<ExceptionMiddleware>();
 
 //app.UseHttpsRedirection();
 
