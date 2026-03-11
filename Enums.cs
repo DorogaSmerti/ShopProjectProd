@@ -1,15 +1,4 @@
 
-
-public enum OrderResult
-{
-    Success,
-    ProductNotFound,
-    ItemNotFound,
-    NotEnoughStock,
-    BadRequest,
-    OrderNotFound
-}
-
 public enum OrderStatus
 {
     Pending,
@@ -26,9 +15,4 @@ public enum UserResult
     UserHasThisRole,
     Success,
     Failure
-}
-
-public enum WishListResult
-{
-    S
 }

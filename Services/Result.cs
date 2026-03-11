@@ -10,7 +10,7 @@ public class Result<TValue>
         {
             if (!IsSuccess)
             {
-                throw new InvalidOperationException("Нельзя получить значение из неудачного результата");
+                throw new InvalidOperationException("Cannot access Value when the result is a failure.");
             }
             return _value;
         } }
@@ -24,5 +24,6 @@ public class Result<TValue>
         _value = value;
     }
     public static Result<TValue> Success(TValue value) => new(true, null, value);
+    public static Result<TValue> Success() => new(true, null, default);
     public static Result<TValue> Failure(Error error) => new(false, error, default);
 }

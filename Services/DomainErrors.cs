@@ -39,5 +39,9 @@ public static class DomainErrors
         public static readonly Error UserNotFound = new("User.UserNotFound", "User not found");
         public static readonly Error UserHasThisRole = new("User.UserHasThisRole", "User already has this role");
         public static readonly Error UserRoleChangeFailed = new("User.UserRoleChangeFailed", "Failed to change user role");
+        public static readonly Error UserAlreadyExists = new("User.UserAlreadyExists", "User with this username already exists");
+        public static readonly Error UserCannotRegister = new("User.UserCannotRegister", "User cannot register with provided data");
+        public static readonly Error EmailAlreadyExists = new("User.EmailAlreadyExists", "User with this email already exists");
+        public static readonly Error PasswordOrUsernameDoesNotMatch = new("User.PasswordOrUsernameDoesNotMatch", "Password or username does not match");
     }
 }

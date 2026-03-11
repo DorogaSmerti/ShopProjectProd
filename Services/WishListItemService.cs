@@ -38,6 +38,13 @@ public class WishListItemService : IWishListItemService
             return Result<WishListItemDto>.Failure(DomainErrors.WishList.LimitReached);
         }
 
+        var product = await _unitOfWork.Product.GetByIdProduct(productId);
+
+        if(product == null)
+        {
+            return Result<WishListItemDto>.Failure(DomainErrors.Product.ProductNotFound);
+        }
+
         var newWishListItem = new WishListItem
         {
             UserId = userId,

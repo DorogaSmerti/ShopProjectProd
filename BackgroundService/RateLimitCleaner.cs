@@ -19,7 +19,7 @@ public class RateLimitCleaner : BackgroundService
 
         while (await PeriodicTimer.WaitForNextTickAsync())
         {
-             _store.CleanAll();
+            _store.CleanAll();
         }
         }
         catch(OperationCanceledException)

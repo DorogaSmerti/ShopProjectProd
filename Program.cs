@@ -20,9 +20,6 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 
 var config = builder.Configuration;
-
-// Здесь добавляются сервисы, например, контроллеры
-builder.Services.AddControllers();
 builder.Services.AddControllers(options =>
 {
     options.SuppressAsyncSuffixInActionNames = false;
@@ -44,8 +41,6 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-    // Use the classic JwtSecurityTokenHandler to avoid runtime mismatches
-    // Compatibility: enable explicit SecurityTokenValidators and use the classic handler
     options.UseSecurityTokenValidators = true;
     options.SecurityTokenValidators.Clear();
     options.SecurityTokenValidators.Add(new JwtSecurityTokenHandler());
@@ -102,7 +97,6 @@ builder.Services.AddAuthentication(options =>
         ,
         OnAuthenticationFailed = context =>
         {
-            // Log the failure reason to console to help debugging (temporary)
             Console.WriteLine("[Jwt] Authentication failed: " + context.Exception?.Message);
             return Task.CompletedTask;
         },
@@ -121,6 +115,8 @@ builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IWishListItemService, WishListItemService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+
 builder.Services.AddSingleton<IRateLimitStore, RateLimitStore>();
 builder.Services.AddHostedService<RateLimitCleaner>();
 
@@ -132,7 +128,6 @@ builder.Services.AddStackExchangeRedisCache(option =>
 
 builder.Services.AddSwaggerGen(options =>
 {
-    // 1. Добавляем кнопку "Authorize"
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -143,7 +138,6 @@ builder.Services.AddSwaggerGen(options =>
         Description = "Введите 'Bearer' [пробел] и ваш токен.\r\n\r\nПример: \"Bearer eyJhbGci...\""
     });
 
-    // 2. Говорим Swagger-у использовать этот токен для всех методов
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -167,12 +161,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseMiddleware<RateLimitingMiddleware>();
 app.UseMiddleware<DecoratorMiddleware>();
 app.UseMiddleware<LoggerMiddleware>();
-app.UseMiddleware<ExceptionMiddleware>();
 
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();

@@ -4,8 +4,8 @@ namespace MyFirstProject.Middleware;
 
 public class LoggerMiddleware
 {
-    public RequestDelegate _next;
-    public ILogger<LoggerMiddleware> _logger;
+    private readonly RequestDelegate _next;
+    private readonly ILogger<LoggerMiddleware> _logger;
     public LoggerMiddleware(RequestDelegate next, ILogger<LoggerMiddleware> logger)
     {
         _next = next;

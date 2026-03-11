@@ -27,6 +27,7 @@ public class UserService : IUserService
             return Result<List<string>?>.Failure(DomainErrors.User.UserNotFound);
         }
         var roles = await _userManager.GetRolesAsync(user);
+        
         return Result<List<string>?>.Success(roles.ToList());
     }
 
@@ -60,6 +61,6 @@ public class UserService : IUserService
         }
 
         await _userManager.DeleteAsync(user);
-        return Result<UserResult>.Success(UserResult.Success);
+        return Result<UserResult>.Success();
     }
 }
