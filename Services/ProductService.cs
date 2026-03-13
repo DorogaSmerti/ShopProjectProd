@@ -2,6 +2,7 @@ using System.Text.Json;
 using Microsoft.Extensions.Caching.Distributed;
 using MyFirstProject.Constants;
 using MyFirstProject.Models;
+using Serilog;
 
 namespace MyFirstProject.Services;
 
@@ -38,6 +39,7 @@ public class ProductService : IProductService
 
         if (!string.IsNullOrEmpty(cachedProduct))
         {
+            Log.Information("Product with id {ProductId} retrieved from cache.", id);
             return Result<ProductDto>.Success(JsonSerializer.Deserialize<ProductDto>(cachedProduct));
         }
 

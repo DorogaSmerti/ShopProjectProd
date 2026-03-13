@@ -1,4 +1,3 @@
-using System.Collections.Concurrent;
 using MyFirstProject.BackgroundServices;
 
 namespace MyFirstProject.Middleware;

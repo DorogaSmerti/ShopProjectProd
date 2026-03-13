@@ -1,0 +1,2 @@
+2026-03-13 15:11:35.699 +02:00 [INF] Product with id 2 retrieved from cache.
+2026-03-13 15:33:17.236 +02:00 [WRN] Action failed. ErrorCode: User.UserNotFound, Context: {"IsSuccess":false,"Value":"The property accessor threw an exception: InvalidOperationException","Error":{"Code":"User.UserNotFound","Message":"User not found","$type":"Error"},"$type":"Result`1"}

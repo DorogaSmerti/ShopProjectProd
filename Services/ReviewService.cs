@@ -70,6 +70,6 @@ public class ReviewService : IReviewService
         _unitOfWork.Reviews.DeleteReview(review);
         await _unitOfWork.SaveChangesAsync();
 
-        return Result<bool>.Success(true);
+        return Result<bool>.Success();
     }
 }

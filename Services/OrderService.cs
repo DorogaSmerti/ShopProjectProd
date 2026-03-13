@@ -6,12 +6,10 @@ namespace MyFirstProject.Services;
 public class OrderService : IOrderService
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly ILogger<OrderService> _logger;
 
-    public OrderService(IUnitOfWork unitOfWork, ILogger<OrderService> logger)
+    public OrderService(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
-        _logger = logger;
     }
 
     public async Task<Result<OrderDto>> GetOrderAsync(string userId, int id)

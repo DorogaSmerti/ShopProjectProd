@@ -1,15 +1,11 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 using MyFirstProject.Data;
 using MyFirstProject.Services;
-using System.Text;
 using MyFirstProject.Middleware;
 using Serilog;
 using MyFirstProject.BackgroundServices;
+using MyFirstProject.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,80 +29,9 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.UseSecurityTokenValidators = true;
-    options.SecurityTokenValidators.Clear();
-    options.SecurityTokenValidators.Add(new JwtSecurityTokenHandler());
+builder.Services.AddDistributedMemoryCache();
 
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidAudience = config["Jwt:Audience"],
-        ValidIssuer = config["Jwt:Issuer"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]!))
-    };
-
-    // Minimal, safe sanitization: clean common client-side token formatting issues
-    options.Events = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents
-    {
-        OnMessageReceived = context =>
-        {
-            var raw = context.Request.Headers["Authorization"].ToString();
-            if (!string.IsNullOrEmpty(raw))
-            {
-                var tokenPart = raw;
-                if (raw.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
-                {
-                    tokenPart = raw.Substring(7);
-                }
-                tokenPart = tokenPart.Trim();
-                // Remove surrounding quotes if present
-                if ((tokenPart.StartsWith("\"") && tokenPart.EndsWith("\"")) ||
-                    (tokenPart.StartsWith("'") && tokenPart.EndsWith("'")))
-                {
-                    tokenPart = tokenPart.Substring(1, tokenPart.Length - 2);
-                }
-                // URL decode (handles accidental encoding)
-                try
-                {
-                    var decoded = System.Net.WebUtility.UrlDecode(tokenPart);
-                    if (!string.IsNullOrEmpty(decoded)) tokenPart = decoded;
-                }
-                catch { }
-
-                tokenPart = tokenPart.Trim('\r', '\n', '\t', ' ');
-
-                // If it looks like a JWT (has two dots), set it for the handler
-                if (tokenPart.Split('.').Length == 3)
-                {
-                    context.Token = tokenPart;
-                }
-            }
-            return Task.CompletedTask;
-        }
-        ,
-        OnAuthenticationFailed = context =>
-        {
-            Console.WriteLine("[Jwt] Authentication failed: " + context.Exception?.Message);
-            return Task.CompletedTask;
-        },
-        OnTokenValidated = context =>
-        {
-            Console.WriteLine("[Jwt] Token validated for: " + context.Principal?.Identity?.Name);
-            return Task.CompletedTask;
-        }
-    };
-});
+builder.Services.AddJwtAuthentication(config);
 
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICartService, CartService>();
@@ -120,46 +45,11 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddSingleton<IRateLimitStore, RateLimitStore>();
 builder.Services.AddHostedService<RateLimitCleaner>();
 
-builder.Services.AddStackExchangeRedisCache(option =>
-{
-    option.Configuration = "localhost:6379";
-    option.InstanceName = "MyFirstProject_";
-});
+builder.Services.AddSwaggerDocumentation();
 
-builder.Services.AddSwaggerGen(options =>
-{
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer",
-        BearerFormat = "JWT",
-        In = ParameterLocation.Header,
-        Description = "Введите 'Bearer' [пробел] и ваш токен.\r\n\r\nПример: \"Bearer eyJhbGci...\""
-    });
-
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            new string[] {}
-        }
-    });
-});
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwaggerDocumentation();
 
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseMiddleware<RateLimitingMiddleware>();
