@@ -29,6 +29,25 @@ public class WishListItemService : IWishListItemService
         return Result<List<WishListItemDto>>.Success(result);
     }
 
+    public async Task<Result<WishListItemDto>> GetWishListItemById(string userId, int wishListItemId)
+    {
+        var wishListItem = await _unitOfWork.WishListItem.GetWishListItemAsync(userId, wishListItemId);
+
+        if(wishListItem == null)
+        {
+            return Result<WishListItemDto>.Failure(DomainErrors.WishList.WishListNotFound);
+        }
+
+        var wishListItemDto = new WishListItemDto
+        {
+            Id = wishListItem.Id,
+            UserId = wishListItem.UserId,
+            ProductId = wishListItem.ProductId,
+            CreateAt = wishListItem.CreateAt,
+        };
+        return Result<WishListItemDto>.Success(wishListItemDto);
+    }
+
     public async Task<Result<WishListItemDto>> AddItemToWishListAsync(int productId, string userId)
     {
         int wishListCount = await _unitOfWork.WishListItem.GetUserWishListItemCountAsync(userId);
@@ -79,13 +98,6 @@ public class WishListItemService : IWishListItemService
         _unitOfWork.WishListItem.DeleteItemFromWishList(itemOfWishList);
         await _unitOfWork.SaveChangesAsync();
 
-        var wishListToReturn = new WishListItemDto{
-            Id = itemOfWishList.Id,
-            UserId = itemOfWishList.UserId,
-            ProductId = itemOfWishList.ProductId,
-            CreateAt = itemOfWishList.CreateAt
-        };
-
-        return Result<WishListItemDto>.Success(wishListToReturn);
+        return Result<WishListItemDto>.Success();
     }
 }

@@ -5,7 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace MyFirstProject.Extensions;
 
-public static class SanitizationExtension
+public static class JwtExtension
 {
     public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration config)
     {

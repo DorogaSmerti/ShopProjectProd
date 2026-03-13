@@ -18,10 +18,25 @@ public class ReviewController : ApiControllerBase
         _reviewService = reviewService;
     }
 
-    [HttpGet()]
+    [HttpGet]
     public async Task<IActionResult> GetReviewsForProductAsync([FromQuery]ReviewQueryParameters parameters ,int productId)
     {
         var result = await _reviewService.GetReviewsForProductAsync(parameters, productId);
+
+        if (!result.IsSuccess)
+        {
+            return HandleFailure(result.Error);
+        }
+
+        return Ok(result.Value);
+    }
+
+    [HttpGet("{reviewId}")]
+    public async Task<IActionResult> GetReviewByIdAsync(int reviewId)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        var result = await _reviewService.GetReviewByIdAsync(userId ?? string.Empty, reviewId);
 
         if (!result.IsSuccess)
         {
@@ -42,7 +57,7 @@ public class ReviewController : ApiControllerBase
         {
             return HandleFailure(result.Error);
         }
-        return Ok(result.Value);
+        return CreatedAtAction(nameof(GetReviewByIdAsync), new {reviewId = result.Value.Id}, result.Value);
     }
 
     [HttpDelete]

@@ -1,17 +1,16 @@
 using MyFirstProject.BackgroundServices;
+using Serilog;
 
 namespace MyFirstProject.Middleware;
 
 public class RateLimitingMiddleware : IRateLimitingMiddleware
 {
     private readonly RequestDelegate _next;
-    private readonly ILogger<RateLimitingMiddleware> _logger;
     private readonly IRateLimitStore _store;
 
-    public RateLimitingMiddleware(RequestDelegate next, ILogger<RateLimitingMiddleware> logger, IRateLimitStore  store)
+    public RateLimitingMiddleware(RequestDelegate next, IRateLimitStore  store)
     {
         _next = next;
-        _logger = logger;
         _store = store;
     }
 
@@ -23,6 +22,7 @@ public class RateLimitingMiddleware : IRateLimitingMiddleware
 
         if(result > 5)
         {
+            Log.Information("IP {ip} has exceeded the rate limit with {count} requests.", ipKey, result);
             context.Response.StatusCode = 429;
             return;
         }

@@ -41,8 +41,8 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IWishListItemService, WishListItemService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-
 builder.Services.AddSingleton<IRateLimitStore, RateLimitStore>();
+
 builder.Services.AddHostedService<RateLimitCleaner>();
 
 builder.Services.AddSwaggerDocumentation();

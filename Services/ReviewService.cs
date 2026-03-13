@@ -31,6 +31,26 @@ public class ReviewService : IReviewService
 
         return Result<List<ReviewsDto>>.Success(reviewsDto);
     }
+
+    public async Task<Result<ReviewsDto>> GetReviewByIdAsync(string? userId, int reviewId)
+    {
+        var review = await _unitOfWork.Reviews.GetReviewAsync(userId ?? string.Empty, reviewId);
+
+        if(review == null)
+        {
+            return Result<ReviewsDto>.Failure(DomainErrors.Review.ReviewNotFound);
+        }        
+
+        var reviewDto = new ReviewsDto
+        {
+            Id = review.Id,
+            Rating = review.Rating,
+            Username = review.User?.UserName ?? "Аноним",
+            Body = review.Body,
+            CreatedAt = review.CreateAt
+        };
+        return Result<ReviewsDto>.Success(reviewDto);
+    }
     public async Task<Result<ReviewsDto>> AddReviewAsync(int productId, string userId, CreateReviewDto createReviewDto)
     {
         var review = new Review
@@ -60,7 +80,7 @@ public class ReviewService : IReviewService
 
     public async Task<Result<bool>> DeleteReviewAsync(int reviewId, string userId)
     {
-        var review = await _unitOfWork.Reviews.GetReviewAsync(reviewId, userId);
+        var review = await _unitOfWork.Reviews.GetReviewAsync(userId, reviewId);
 
         if (review == null)
         {

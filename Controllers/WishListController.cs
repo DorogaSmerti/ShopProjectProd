@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MyFirstProject.Models;
 using MyFirstProject.Services;
 using System.Security.Claims;
 
@@ -32,6 +33,22 @@ public class WishListController : ApiControllerBase
 
         return Ok(result.Value);
     }
+
+    [HttpGet("{wishListItemId}")]
+    public async Task<IActionResult> GetWishListItemByIdAsync(int wishListItemId)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        var result = await _wishListItem.GetWishListItemById(userId, wishListItemId);
+
+        if (!result.IsSuccess)
+        {
+            return HandleFailure(result.Error);
+        }
+
+        return Ok(result.Value);
+    }
+
     [HttpPost("{productId}")]
 
     public async Task<IActionResult> AddItemToWishListAsync(int productId)
@@ -45,7 +62,7 @@ public class WishListController : ApiControllerBase
             return HandleFailure(result.Error);
         }
 
-        return Ok(result.Value);
+        return CreatedAtAction(nameof(GetWishListItemByIdAsync), new {wishListItemId = result.Value.Id}, result.Value);
     }
 
     [HttpDelete("{id}")]

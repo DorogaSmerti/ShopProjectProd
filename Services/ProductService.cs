@@ -159,6 +159,6 @@ public class ProductService : IProductService
 
         await _cache.RemoveAsync(CachedKeys.Product(id));
 
-        return Result<bool>.Success(true);
+        return Result<bool>.Success();
     }
 }

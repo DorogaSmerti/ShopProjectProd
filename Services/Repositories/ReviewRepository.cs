@@ -31,9 +31,14 @@ public class ReviewRepository : IReviewRepository
         return await reviews.ToListAsync();
     }
 
-    public async Task<Review> GetReviewAsync(int reviewId, string userId)
+    public async Task<Review> GetReviewAsync(string userId, int reviewId)
     {
         return await _context.Reviews.FirstOrDefaultAsync(p => p.Id == reviewId && p.UserId == userId);
+    }
+
+    public async Task<Review> GetReviewAsync(int reviewId)
+    {
+        return await _context.Reviews.FirstOrDefaultAsync(p => p.Id == reviewId);
     }
 
     public async Task AddReviewAsync(Review review)

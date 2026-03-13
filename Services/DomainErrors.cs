@@ -4,8 +4,9 @@ public static class DomainErrors
 {
     public static class WishList
     {
-        public static readonly Error LimitReached = new("WishList.LimitReached", "Лимит желаемых товаров достигнут");
-        public static readonly Error ItemNotFound = new("WishList.ItemNotFound", "Товар не найден в списке желаемых товаров");
+        public static readonly Error LimitReached = new("WishList.LimitReached", "limit of 500 items in wishList reached");
+        public static readonly Error ItemNotFound = new("WishList.ItemNotFound", "product not found in wishList");
+        public static readonly Error WishListNotFound = new("WishList.WishListNotFound", "wishList not found");
     }
 
     public static class Product
