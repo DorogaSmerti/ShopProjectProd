@@ -2,9 +2,9 @@ services:
   db:
     image: postgres:15
     environment:
-    - POSTGRES_USER=postgres
-    - POSTGRES_PASSWORD=12345
-    - POSTGRES_DB=MyFirstProjectDB
+    - POSTGRES_USER=${DB_USER}
+    - POSTGRES_PASSWORD=${DB_PASSWORD}
+    - POSTGRES_DB=${NAME_DB}
     volumes:
       - postgres_data:/var/lib/postgresql/data
   api:
@@ -18,9 +18,10 @@ services:
     working_dir: /app
     command: dotnet watch run --non-interactive --urls=http://0.0.0.0:8080
     environment:
-      - ConnectionStrings__DefaultConnection=Host=db;Database=MyFirstProjectDB;Username=postgres;Password=12345;
+      - ConnectionStrings__DefaultConnection=Host=db;Database=${NAME_DB};Username=${DB_USER};Password=${DB_PASSWORD};
       - ASPNETCORE_ENVIRONMENT=Development
       - DotNetWatch_USE_POLLING_FILE_WATCHER=1
+      - JWT__KEY=${JWT_KEY}
     stdin_open: true
     tty: true
 

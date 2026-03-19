@@ -14,7 +14,7 @@ public class WishListItemRepository : IWishListItemRepository
 
     public async Task<List<WishListItem>> GetAllWishItemAsync(string userId)
     {
-        return await _context.WishListItems.Where(p => p.UserId == userId).ToListAsync();
+        return await _context.WishListItems.AsNoTracking().Where(p => p.UserId == userId).ToListAsync();
     }
 
     public async Task<int> GetUserWishListItemCountAsync(string userId)

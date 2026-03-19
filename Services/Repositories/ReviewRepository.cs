@@ -15,7 +15,7 @@ public class ReviewRepository : IReviewRepository
 
     public async Task<List<Review>> GetReviewsAsync(ReviewQueryParameters parameters, int productId)
     {
-        IQueryable<Review> reviews = _context.Reviews.Where(p => p.ProductId == productId);
+        IQueryable<Review> reviews = _context.Reviews.AsNoTracking().Where(p => p.ProductId == productId).AsQueryable();
 
         if (parameters.MaxRating.HasValue)
         {

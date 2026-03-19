@@ -16,3 +16,4 @@ appsettings.Development.json
 *.md
 
 *.log
+*.env

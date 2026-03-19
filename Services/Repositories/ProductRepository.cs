@@ -15,7 +15,7 @@ public class ProductRepository : IProductRepository
 
     public async Task<List<Product>> GetAllProduct(ProductQueryParameters parameters)
     {
-        IQueryable<Product> products = _context.Products.AsQueryable();
+        IQueryable<Product> products = _context.Products.AsNoTracking().AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
         {
