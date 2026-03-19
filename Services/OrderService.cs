@@ -42,8 +42,8 @@ public class OrderService : IOrderService
     public async Task<Result<OrderDto>> CreateOrderFromCartAsync(string userId)
     {
         await _unitOfWork.BeginTransactionAsync();
-            try
-            {
+        try
+        {
         var cartItems = await _unitOfWork.CartItem.GetCartAsync(userId);
 
         if (cartItems == null || cartItems.Count == 0)

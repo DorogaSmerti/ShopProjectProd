@@ -44,7 +44,7 @@ public class UnitOfWork : IUnitOfWork
     {
         try
         {
-            await _context.SaveChangesAsync(); // Сохраняем изменения перед коммитом
+            await _context.SaveChangesAsync();
             
             if (_currentTransaction != null)
             {

@@ -52,15 +52,15 @@ public class UserService : IUserService
         return Result<IdentityUser>.Failure(DomainErrors.User.UserRoleChangeFailed);
     }
 
-    public async Task<Result<UserResult>> DeleteUserAsync(DeleteUserDto deleteUserDto)
+    public async Task<Result<IdentityUser>> DeleteUserAsync(DeleteUserDto deleteUserDto)
     {
         var user = await _userManager.FindByIdAsync(deleteUserDto.UserId);
         if (user == null)
         {
-            return Result<UserResult>.Failure(DomainErrors.User.UserNotFound);
+            return Result<IdentityUser>.Failure(DomainErrors.User.UserNotFound);
         }
 
         await _userManager.DeleteAsync(user);
-        return Result<UserResult>.Success();
+        return Result<IdentityUser>.Success();
     }
 }

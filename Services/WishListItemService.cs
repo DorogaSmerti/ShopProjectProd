@@ -71,8 +71,6 @@ public class WishListItemService : IWishListItemService
             CreateAt = DateTime.UtcNow
         };
 
-        await _cache.RemoveAsync(CachedKeys.WishList(newWishListItem.Id));
-
         await _unitOfWork.WishListItem.AddItemToWishListAsync(newWishListItem);
         await _unitOfWork.SaveChangesAsync();
 
@@ -82,6 +80,8 @@ public class WishListItemService : IWishListItemService
             ProductId = newWishListItem.ProductId,
             CreateAt = newWishListItem.CreateAt
         };
+
+        await _cache.RemoveAsync(CachedKeys.WishList(wishListToReturn.Id));
 
         return Result<WishListItemDto>.Success(wishListToReturn);
     }

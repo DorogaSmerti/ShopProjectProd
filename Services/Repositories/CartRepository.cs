@@ -16,6 +16,7 @@ public class CartRepository : ICartRepository
     public async Task<List<CartItem>> GetCartAsync(string userId)
     {
         return await _context.CartItems
+            .AsNoTracking()
             .Include(p => p.Product)
             .Where(p => p.UserId == userId)
             .ToListAsync();

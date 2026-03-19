@@ -8,11 +8,3 @@ public enum OrderStatus
     Canceled
     
 }
-
-public enum UserResult
-{
-    UserNotFound,
-    UserHasThisRole,
-    Success,
-    Failure
-}

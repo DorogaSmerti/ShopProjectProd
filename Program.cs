@@ -65,6 +65,23 @@ app.MapControllers();
 
 using (var scope = app.Services.CreateScope())
 {
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<AppDbContext>(); // Твой класс контекста
+        if (context.Database.GetPendingMigrations().Any())
+        {
+            context.Database.Migrate();
+        }
+    }
+    catch (Exception ex)
+    {
+        Log.Error(ex, "Ошибка при накатывании миграций");
+    }
+}
+
+using (var scope = app.Services.CreateScope())
+{
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
     var roles = new[] { "Admin", "User", "Manager" };
@@ -74,6 +91,35 @@ using (var scope = app.Services.CreateScope())
         if (!await roleManager.RoleExistsAsync(role))
         {
             await roleManager.CreateAsync(new IdentityRole(role));
+        }
+    }
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+
+    var adminName = "Admin";
+    var adminEmail = "admin@example.com";
+    var adminPassword = "Admin123!";
+    if (await userManager.FindByNameAsync(adminName) == null)
+    {
+        var adminUser = new IdentityUser { UserName = adminName, Email = adminEmail };
+        var result = await userManager.CreateAsync(adminUser, adminPassword);
+        if (result.Succeeded)
+        {
+            await userManager.AddToRoleAsync(adminUser, "Admin");
+        }
+        else
+        {
+            Log.Error("Ошибка при создании администратора: {Errors}", string.Join(", ", result.Errors.Select(e => e.Description)));
+        }
+    }else if(await userManager.FindByNameAsync(adminName) != null)
+    {
+        var adminUser = await userManager.FindByNameAsync(adminName);
+        if (!await userManager.IsInRoleAsync(adminUser, "Admin"))
+        {
+            await userManager.AddToRoleAsync(adminUser, "Admin");
         }
     }
 }

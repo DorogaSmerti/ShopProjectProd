@@ -6,7 +6,7 @@ namespace MyFirstProject.Services;
 public interface IUserService
 {
     Task<Result<List<IdentityUser>>> GetAllUsersAsync();
-    Task<Result<List<string>?>> GetUserRolesAsync(string user);
+    Task<Result<List<string>?>> GetUserRolesAsync(string userId);
     Task<Result<IdentityUser>> ChangeRoleAsync(ChangeRoleDto changeRoleDto);
-    Task<Result<UserResult>> DeleteUserAsync(DeleteUserDto deleteUserDto);
+    Task<Result<IdentityUser>> DeleteUserAsync(DeleteUserDto deleteUserDto);
 }

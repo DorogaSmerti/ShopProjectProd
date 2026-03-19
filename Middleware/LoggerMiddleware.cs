@@ -1,15 +1,14 @@
 using System.Diagnostics;
+using Serilog;
 
 namespace MyFirstProject.Middleware;
 
 public class LoggerMiddleware
 {
     private readonly RequestDelegate _next;
-    private readonly ILogger<LoggerMiddleware> _logger;
-    public LoggerMiddleware(RequestDelegate next, ILogger<LoggerMiddleware> logger)
+    public LoggerMiddleware(RequestDelegate next)
     {
         _next = next;
-        _logger = logger;
     }
 
     public async Task InvokeAsync(HttpContext context)
@@ -20,6 +19,6 @@ public class LoggerMiddleware
 
         time.Stop();
 
-        _logger.LogInformation($"Request: {context.Request.Path} time: {time.ElapsedMilliseconds}");
+        Log.Information($"Request: {context.Request.Path} time: {time.ElapsedMilliseconds}");
     }
 }

@@ -45,7 +45,7 @@ public class ProductsController : ApiControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Manager")]
+    [Authorize(Roles = "Manager,Admin")]
     public async Task<IActionResult> CreateProduct([FromBody] CreateProductDto createProductDto)
     {
         var result = await _productService.CreateProductAsync(createProductDto);
@@ -58,7 +58,7 @@ public class ProductsController : ApiControllerBase
     }
 
     [HttpPatch("{productId}")]
-    [Authorize(Roles = "Manager")]
+    [Authorize(Roles = "Manager,Admin")]
     public async Task<IActionResult> PatchProduct(int productId, [FromBody] ProductDto newProductDto)
     {
         var result = await _productService.PatchProductAsync(productId, newProductDto);
