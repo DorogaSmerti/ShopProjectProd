@@ -9,6 +9,8 @@
 .vscode/
 
 appsettings.Development.json
+DecoratorMiddleware.cs
+LoggingMiddleware.cs
 
 *.db
 *.mdf

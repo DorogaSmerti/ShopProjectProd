@@ -39,8 +39,7 @@ public static class JwtExtension
 
     public static JwtBearerOptions ApplyTokenSanitization(this JwtBearerOptions options)
     {
-        // Minimal, safe sanitization: clean common client-side token formatting issues
-    options.Events = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents
+    options.Events = new JwtBearerEvents
     {
         OnMessageReceived = context =>
         {
@@ -53,13 +52,11 @@ public static class JwtExtension
                     tokenPart = raw.Substring(7);
                 }
                 tokenPart = tokenPart.Trim();
-                // Remove surrounding quotes if present
                 if ((tokenPart.StartsWith("\"") && tokenPart.EndsWith("\"")) ||
                     (tokenPart.StartsWith("'") && tokenPart.EndsWith("'")))
                 {
                     tokenPart = tokenPart.Substring(1, tokenPart.Length - 2);
                 }
-                // URL decode (handles accidental encoding)
                 try
                 {
                     var decoded = System.Net.WebUtility.UrlDecode(tokenPart);
@@ -69,7 +66,6 @@ public static class JwtExtension
 
                 tokenPart = tokenPart.Trim('\r', '\n', '\t', ' ');
 
-                // If it looks like a JWT (has two dots), set it for the handler
                 if (tokenPart.Split('.').Length == 3)
                 {
                     context.Token = tokenPart;
