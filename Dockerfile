@@ -1,13 +1,11 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+WORKDIR /src
+COPY ["MyFirstProject.csproj", "./"]
+RUN dotnet restore
+COPY . .
+RUN dotnet publish -c Release -o /app/publish
+
+FROM mcr.microsoft.com/dotnet/apphost:9.0 AS final
 WORKDIR /app
-
-COPY . ./
-
-
-RUN dotnet restore "MyFirstProject.csproj"
-
-RUN dotnet publish "MyFirstProject.csproj" -c Release -o /out
-
-WORKDIR /out
-
-ENTRYPOINT [ "dotnet", "MyFirstProject.dll" ]
+COPY --from=build /app/publish .
+ENTRYPOINT ["dotnet", "MyFirstProject.dll"]

@@ -11,6 +11,7 @@
 appsettings.Development.json
 DecoratorMiddleware.cs
 LoggingMiddleware.cs
+docker-compose-dev.yml
 
 *.db
 *.mdf
