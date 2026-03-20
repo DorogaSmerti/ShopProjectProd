@@ -1,29 +1,29 @@
-# 🛒 E-Shop Web API (.NET 9)
+# E-Shop Web API (.NET 9)
 
 A modern, high-performance e-commerce backend built with **.NET 9**. This project focuses on Clean Architecture, scalability, and deep database optimization using the latest features of the .NET ecosystem.
 
 
 ---
 
-## 🚀 Key Technical Features
+## Key Technical Features
 
-### 🏗 Architecture & Clean Code
+### Architecture & Clean Code
 * **Layered Architecture:** Strict separation of concerns between Presentation, Business Logic, and Data Access layers.
 * **Clean Program.cs:** Utilizes **Extension Methods** for service configurations, keeping the entry point modular, readable, and easy to maintain.
 * **RESTful Design:** Full compliance with REST standards, including proper HTTP methods, status codes, and resource-based routing.
 
-### ⚡ Performance Optimization
+### Performance Optimization
 * **Advanced Data Access:** Optimized **EF Core** queries using `.AsNoTracking()` for read-heavy operations.
 * **Distributed Caching Strategy:** Implemented abstract caching via the `IDistributedCache` interface. This architectural choice allows seamless switching between **MemoryCache** and **Redis** without modifying business logic.
 * **Modern C# 13 Features:** Leveraged the latest language features for more efficient, expressive, and memory-safe code.
 
-### 🔒 Security & Access Control
+### Security & Access Control
 * **JWT Authentication:** Secure, token-based authentication for stateless communication.
 * **Role-Based Access Control (RBAC):** Fine-grained permission management for `Admin`, `Manager`, and `User` roles to protect sensitive endpoints.
 
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 | Technology | Purpose |
 | :--- | :--- |
@@ -36,17 +36,17 @@ A modern, high-performance e-commerce backend built with **.NET 9**. This projec
 
 ---
 
-## 📦 Quick Start
+## Quick Start
 
 The project is fully containerized. You can spin up the entire infrastructure (API, Database, and Cache) with a single command.
 
 1. **Clone the repository:**
    ```bash
    git clone [https://github.com/DorogaSmerti/ShopProjectProd.git](https://github.com/DorogaSmerti/ShopProjectProd.git)
-3. **Spin up the infrastructure:**
+2. **Spin up the infrastructure:**
    ```bash
    docker compose up -d --build
-4. **Access API Documentation:**
+3. **Access API Documentation:**
   Open http://localhost:5000/scalar/v1 in your browser.
 
 ---
@@ -60,7 +60,7 @@ The project is fully containerized. You can spin up the entire infrastructure (A
 
 ---
 
-## ⚙️ Configuration
+## Configuration
 
 The project uses the standard .NET configuration provider hierarchy. 
 
