@@ -78,18 +78,18 @@ public class ReviewService : IReviewService
         return Result<ReviewsDto>.Success(result);
     }
 
-    public async Task<Result<bool>> DeleteReviewAsync(int reviewId, string userId)
+    public async Task<Result<ReviewsDto>> DeleteReviewAsync(int reviewId, string userId)
     {
         var review = await _unitOfWork.Reviews.GetReviewAsync(userId, reviewId);
 
         if (review == null)
         {
-            return Result<bool>.Failure(DomainErrors.Review.ReviewNotFound);
+            return Result<ReviewsDto>.Failure(DomainErrors.Review.ReviewNotFound);
         }
 
         _unitOfWork.Reviews.DeleteReview(review);
         await _unitOfWork.SaveChangesAsync();
 
-        return Result<bool>.Success();
+        return Result<ReviewsDto>.Success();
     }
 }

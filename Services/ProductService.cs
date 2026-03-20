@@ -145,13 +145,13 @@ public class ProductService : IProductService
         return Result<ProductDto>.Success(productDto);
     } 
 
-    public async Task<Result<bool>> DeleteProductAsync(int id)
+    public async Task<Result<ProductDto>> DeleteProductAsync(int id)
     {
         var product = await _unitOfWork.Product.GetByIdProduct(id);
 
         if (product == null)
         {
-            return Result<bool>.Failure(DomainErrors.Product.ProductNotFound);
+            return Result<ProductDto>.Failure(DomainErrors.Product.ProductNotFound);
         }
 
         _unitOfWork.Product.DeleteProduct(product);
@@ -159,6 +159,6 @@ public class ProductService : IProductService
 
         await _cache.RemoveAsync(CachedKeys.Product(id));
 
-        return Result<bool>.Success();
+        return Result<ProductDto>.Success();
     }
 }

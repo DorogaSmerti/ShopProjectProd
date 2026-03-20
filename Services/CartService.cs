@@ -103,13 +103,13 @@ public class CartService : ICartService
         return Result<CartItemDto>.Success(resultDto);
     }
 
-    public async Task<Result<bool>> DeleteFromCartAsync(string userId, int cartItemId)
+    public async Task<Result<CartItemDto>> DeleteFromCartAsync(string userId, int cartItemId)
     {
         var cartItem = await _unitOfWork.CartItem.GetCartItemAsync(userId, cartItemId);
 
         if (cartItem == null)
         {
-            return Result<bool>.Failure(DomainErrors.Cart.CartNotFound);
+            return Result<CartItemDto>.Failure(DomainErrors.Cart.CartNotFound);
         }
 
         _unitOfWork.CartItem.DeleteFromCart(cartItem);
@@ -117,28 +117,28 @@ public class CartService : ICartService
 
         await _cache.RemoveAsync(CachedKeys.Cart(userId));
 
-        return Result<bool>.Success(true);
+        return Result<CartItemDto>.Success();
     }
     
-    public async Task<Result<bool>> UpdateQuantityAsync(string userId, int cartItemId, int quantity)
+    public async Task<Result<CartItemDto>> UpdateQuantityAsync(string userId, int cartItemId, int quantity)
     {
         var cartItem = await _unitOfWork.CartItem.GetCartItemAsync(userId, cartItemId);
 
         if (cartItem == null)
         {
-            return Result<bool>.Failure(DomainErrors.Cart.CartNotFound);
+            return Result<CartItemDto>.Failure(DomainErrors.Cart.CartNotFound);
         }
 
         var product = await _unitOfWork.Product.GetByIdProduct(cartItem.ProductId);
 
         if (product == null)
         {
-            return Result<bool>.Failure(DomainErrors.Cart.ProductNotFound);
+            return Result<CartItemDto>.Failure(DomainErrors.Cart.ProductNotFound);
         }
 
         if (product.Stock < quantity)
         {
-            return Result<bool>.Failure(DomainErrors.Cart.NotEnoughStock);
+            return Result<CartItemDto>.Failure(DomainErrors.Cart.NotEnoughStock);
         }
 
         if (quantity == 0)
@@ -153,6 +153,6 @@ public class CartService : ICartService
 
         await _cache.RemoveAsync(CachedKeys.Cart(userId));
 
-        return Result<bool>.Success(true);
+        return Result<CartItemDto>.Success();
     }
 }
