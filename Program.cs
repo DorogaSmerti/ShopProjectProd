@@ -8,7 +8,6 @@ using MyFirstProject.BackgroundServices;
 using MyFirstProject.Extensions;
 using FluentValidation.AspNetCore;
 using FluentValidation;
-using MyFirstProject.Models;
 using MyFirstProject.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -47,6 +46,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddSingleton<IRateLimitStore, RateLimitStore>();
 
+builder.Services.AddValidationCatcher();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateProductValidator>();
 builder.Services.AddFluentValidationAutoValidation();
 

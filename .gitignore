@@ -16,6 +16,7 @@ docker-compose-dev.yml
 *.db
 *.mdf
 *.ldf
+*.txt
 
 *.log
 *.env

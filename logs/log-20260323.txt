@@ -1,6 +1,0 @@
-2026-03-23 16:31:58.855 +02:00 [INF] Request: /scalar time: 914
-2026-03-23 16:31:59.073 +02:00 [INF] Request: /scalar/ time: 97
-2026-03-23 16:31:59.250 +02:00 [INF] Request: /scalar/scalar.aspnetcore.js time: 18
-2026-03-23 16:31:59.267 +02:00 [INF] Request: /scalar/scalar.js time: 31
-2026-03-23 16:35:10.420 +02:00 [INF] Request: /api/Auth/login time: 187
-2026-03-23 16:35:50.179 +02:00 [INF] Request: /api/Products time: 101

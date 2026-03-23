@@ -1,6 +1,0 @@
-2026-03-22 22:57:11.525 +02:00 [INF] Request: /scalar time: 959
-2026-03-22 22:57:11.654 +02:00 [INF] Request: /scalar/ time: 65
-2026-03-22 22:57:11.835 +02:00 [INF] Request: /scalar/scalar.aspnetcore.js time: 8
-2026-03-22 22:57:11.882 +02:00 [INF] Request: /scalar/scalar.js time: 58
-2026-03-22 22:57:13.111 +02:00 [INF] Request: /scalar/favicon.svg time: 0
-2026-03-22 22:57:20.962 +02:00 [INF] Request: /api/Products time: 152
