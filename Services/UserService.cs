@@ -31,20 +31,43 @@ public class UserService : IUserService
         return Result<List<string>?>.Success(roles.ToList());
     }
 
-    public async Task<Result<IdentityUser>> ChangeRoleAsync(ChangeRoleDto changeRoleDto)
+    public async Task<Result<IdentityUser>> AddRoleAsync(AddRoleDto addRoleDto)
     {
-        var user = await _userManager.FindByIdAsync(changeRoleDto.UserId);
+        var user = await _userManager.FindByIdAsync(addRoleDto.UserId);
         if (user == null)
         {
             return Result<IdentityUser>.Failure(DomainErrors.User.UserNotFound);
         }
 
-        if (await _userManager.IsInRoleAsync(user, changeRoleDto.Role))
+        if (await _userManager.IsInRoleAsync(user, addRoleDto.Role))
         {
             return Result<IdentityUser>.Failure(DomainErrors.User.UserHasThisRole);
         }
 
-        var result = await _userManager.AddToRoleAsync(user, changeRoleDto.Role);
+        var result = await _userManager.AddToRoleAsync(user, addRoleDto.Role);
+        if (result.Succeeded)
+        {
+            return Result<IdentityUser>.Success(user);
+        }
+        return Result<IdentityUser>.Failure(DomainErrors.User.UserRoleChangeFailed);
+    }
+
+    public async Task<Result<IdentityUser>> DeleteRoleAsync(AddRoleDto addRoleDto)
+    {
+        var user = await _userManager.FindByIdAsync(addRoleDto.UserId);
+
+        if(user == null)
+        {
+            return Result<IdentityUser>.Failure(DomainErrors.User.UserNotFound);
+        }
+
+        if (!await _userManager.IsInRoleAsync(user, addRoleDto.Role))
+        {
+            return Result<IdentityUser>.Failure(DomainErrors.User.UserDoesNotHaveThisRole);
+        }
+
+        var result = await _userManager.RemoveFromRoleAsync(user, addRoleDto.Role);
+        
         if (result.Succeeded)
         {
             return Result<IdentityUser>.Success(user);

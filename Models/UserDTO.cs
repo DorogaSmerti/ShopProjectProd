@@ -8,7 +8,7 @@ public class UsersDTO
     public required IList<string> Roles { get; set; }
 }
 
-public class ChangeRoleDto
+public class AddRoleDto
 {
     public required string UserId { get; set; }
     public required string Role { get; set; }

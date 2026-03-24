@@ -44,5 +44,6 @@ public static class DomainErrors
         public static readonly Error UserCannotRegister = new("User.UserCannotRegister", "User cannot register with provided data");
         public static readonly Error EmailAlreadyExists = new("User.EmailAlreadyExists", "User with this email already exists");
         public static readonly Error PasswordOrUsernameDoesNotMatch = new("User.PasswordOrUsernameDoesNotMatch", "Password or username does not match");
+        public static readonly Error UserDoesNotHaveThisRole = new("User.UserDoesNotHaveThisRole", "User doesn't have this role");
     }
 }

@@ -37,10 +37,10 @@ public class UserController : ApiControllerBase
         return Ok(user.Value);
     }
 
-    [HttpPost("roleChanger")]
-    public async Task<IActionResult> RankChanger([FromBody] ChangeRoleDto changeRoleDto)
+    [HttpPost("rankChanger")]
+    public async Task<IActionResult> RankChanger([FromBody] AddRoleDto AddRoleDto)
     {
-        var result = await _userService.ChangeRoleAsync(changeRoleDto);
+        var result = await _userService.AddRoleAsync(AddRoleDto);
         
         if (!result.IsSuccess)
         {
@@ -51,6 +51,19 @@ public class UserController : ApiControllerBase
     }
 
     [HttpDelete("deleteRole")]
+    public async Task<IActionResult> DeleteRole([FromBody] AddRoleDto addRoleDto)
+    {
+        var result = await _userService.DeleteRoleAsync(addRoleDto);
+
+        if (!result.IsSuccess)
+        {
+            return HandleFailure(result.Error, result);
+        }
+
+        return Ok(new {message = "Роль пользователя удалена"});
+    }
+
+    [HttpDelete("deleteUser")]
     public async Task<IActionResult> DeleteUser([FromBody] DeleteUserDto deleteUserDto)
     {
         var result = await _userService.DeleteUserAsync(deleteUserDto);
