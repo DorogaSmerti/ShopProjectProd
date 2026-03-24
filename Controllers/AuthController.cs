@@ -16,7 +16,7 @@ public class AuthController : ApiControllerBase
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
+    public async Task<IActionResult> RegisterAsync([FromBody] RegisterDto registerDto)
     {
        var result = await _authService.RegisterAsync(registerDto);
 
@@ -29,7 +29,7 @@ public class AuthController : ApiControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
+    public async Task<IActionResult> LoginAsync([FromBody] LoginDto loginDto)
     {
         var result = await _authService.LoginAsync(loginDto);
 

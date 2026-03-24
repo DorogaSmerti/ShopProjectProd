@@ -14,6 +14,13 @@ public class AddRoleDto
     public required string Role { get; set; }
 }
 
+public class ChangeRoleDto
+{
+    public required string UserId { get; set; }
+    public required string OldRole { get; set; }
+    public required string NewRole { get; set; }
+}
+
 public class DeleteUserDto
 {
     public required string UserId { get; set; }

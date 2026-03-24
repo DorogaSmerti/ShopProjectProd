@@ -61,7 +61,7 @@ public class ReviewController : ApiControllerBase
     }
 
     [HttpDelete]
-    public async Task<IActionResult> DeleteReview(int reviewId)
+    public async Task<IActionResult> DeleteReviewAsync(int reviewId)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 

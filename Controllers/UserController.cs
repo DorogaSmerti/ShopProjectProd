@@ -19,14 +19,14 @@ public class UserController : ApiControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllUsers()
+    public async Task<IActionResult> GetAllUsersAsync()
     {
         var users = await _userService.GetAllUsersAsync();
         return Ok(users.Value);
     }
 
     [HttpGet("roles/{userId}")]
-    public async Task<IActionResult> GetUserRoles(string userId)
+    public async Task<IActionResult> GetUserRolesAsync(string userId)
     {
         var user = await _userService.GetUserRolesAsync(userId);
         if (!user.IsSuccess)
@@ -37,10 +37,10 @@ public class UserController : ApiControllerBase
         return Ok(user.Value);
     }
 
-    [HttpPost("rankChanger")]
-    public async Task<IActionResult> RankChanger([FromBody] AddRoleDto AddRoleDto)
+    [HttpPost("AddRole")]
+    public async Task<IActionResult> AddRoleAsync([FromBody] AddRoleDto addRoleDto)
     {
-        var result = await _userService.AddRoleAsync(AddRoleDto);
+        var result = await _userService.AddRoleAsync(addRoleDto);
         
         if (!result.IsSuccess)
         {
@@ -51,7 +51,7 @@ public class UserController : ApiControllerBase
     }
 
     [HttpDelete("deleteRole")]
-    public async Task<IActionResult> DeleteRole([FromBody] AddRoleDto addRoleDto)
+    public async Task<IActionResult> DeleteRoleAsync([FromBody] AddRoleDto addRoleDto)
     {
         var result = await _userService.DeleteRoleAsync(addRoleDto);
 
@@ -64,7 +64,7 @@ public class UserController : ApiControllerBase
     }
 
     [HttpDelete("deleteUser")]
-    public async Task<IActionResult> DeleteUser([FromBody] DeleteUserDto deleteUserDto)
+    public async Task<IActionResult> DeleteUserAsync([FromBody] DeleteUserDto deleteUserDto)
     {
         var result = await _userService.DeleteUserAsync(deleteUserDto);
 
