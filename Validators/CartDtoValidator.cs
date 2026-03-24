@@ -3,9 +3,9 @@ using MyFirstProject.Models;
 
 namespace MyFirstProject.Validators;
 
-public class CartDtoValidatior : AbstractValidator<AddToCartDto>
+public class AddToCartDtoValidator : AbstractValidator<AddToCartDto>
 {
-    public CartDtoValidatior()
+    public AddToCartDtoValidator()
     {
         RuleFor(x => x.ProductId)
         .GreaterThan(0).WithMessage("ProductId must be greater than 0");
