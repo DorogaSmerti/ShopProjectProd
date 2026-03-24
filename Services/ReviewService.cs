@@ -24,7 +24,7 @@ public class ReviewService : IReviewService
         {
             Id = r.Id,
             Rating = r.Rating,
-            Username = r.User?.UserName ?? "Аноним",
+            Username = r.User?.UserName ?? "Anonymous",
             Body = r.Body,
             CreatedAt = r.CreateAt
         }).ToList();
@@ -45,7 +45,7 @@ public class ReviewService : IReviewService
         {
             Id = review.Id,
             Rating = review.Rating,
-            Username = review.User?.UserName ?? "Аноним",
+            Username = review.User?.UserName ?? "Anonymous",
             Body = review.Body,
             CreatedAt = review.CreateAt
         };
@@ -70,7 +70,7 @@ public class ReviewService : IReviewService
         var result = new ReviewsDto
         {
             Id = review.Id,
-            Username = user?.UserName ?? "Аноним",
+            Username = user?.UserName ?? "Anonymous",
             Body = review.Body,
             Rating = review.Rating,
         };
