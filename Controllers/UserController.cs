@@ -47,7 +47,7 @@ public class UserController : ApiControllerBase
             return HandleFailure(result.Error, result);
         }
 
-        return Ok(new {message = "Роль пользователя изменена"});
+        return Ok(new {message = "Role user added"});
     }
 
     [HttpDelete("deleteRole")]
@@ -60,7 +60,7 @@ public class UserController : ApiControllerBase
             return HandleFailure(result.Error, result);
         }
 
-        return Ok(new {message = "Роль пользователя удалена"});
+        return Ok(new {message = "Role user deleted"});
     }
 
     [HttpDelete("deleteUser")]
@@ -73,6 +73,6 @@ public class UserController : ApiControllerBase
             return HandleFailure(result.Error, result);
         }
 
-        return Ok(new {message = "Пользователь удалён"});
+        return Ok(new {message = "User deleted"});
     }
 }

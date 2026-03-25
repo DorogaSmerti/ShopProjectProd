@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using MyFirstProject.Services;
 using Serilog;
@@ -8,6 +9,8 @@ namespace MyFirstProject.Controllers;
 [Route("api/[controller]")]
 public abstract class ApiControllerBase : ControllerBase
 {
+
+    protected string UserId => User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
     protected IActionResult HandleFailure(Error error, object? context = null)
     {
         Log.Warning("Action failed. ErrorCode: {Code}, Context: {@context}", error.Code, context);

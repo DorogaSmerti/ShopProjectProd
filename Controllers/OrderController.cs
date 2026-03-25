@@ -21,9 +21,7 @@ public class OrderController : ApiControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetOrderAsync(int id)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        var order = await _orderService.GetOrderAsync(userId, id);
+        var order = await _orderService.GetOrderAsync(UserId, id);
 
         if (!order.IsSuccess)
         {
@@ -36,9 +34,7 @@ public class OrderController : ApiControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateOrderFromCartAsync()
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        var result = await _orderService.CreateOrderFromCartAsync(userId);
+        var result = await _orderService.CreateOrderFromCartAsync(UserId);
 
         if (!result.IsSuccess)
         {

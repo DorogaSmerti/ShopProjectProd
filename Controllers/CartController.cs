@@ -22,9 +22,7 @@ public class CartController : ApiControllerBase
     [HttpGet]
     public async Task<IActionResult> GetCartAsync()
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        var cart = await _cartServices.GetCartAsync(userId);
+        var cart = await _cartServices.GetCartAsync(UserId);
 
         if (!cart.IsSuccess)
         {
@@ -36,23 +34,19 @@ public class CartController : ApiControllerBase
     [HttpPost]
     public async Task<IActionResult> AddToCartAsync([FromBody] AddToCartDto addToCartDto)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-     
-        var cart = await _cartServices.AddToCartAsync(userId, addToCartDto.ProductId, addToCartDto.Quantity);
+        var cart = await _cartServices.AddToCartAsync(UserId, addToCartDto.ProductId, addToCartDto.Quantity);
 
         if (!cart.IsSuccess)
         {
             return HandleFailure(cart.Error);
         }
 
-        return CreatedAtAction(nameof(GetCartAsync), new { userId = userId }, cart.Value);
+        return CreatedAtAction(nameof(GetCartAsync), new { userId = UserId }, cart.Value);
     }
     [HttpDelete("{cartItemId}")]
     public async Task<IActionResult> DeleteFromCartAsync(int cartItemId)
-    {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-               
-        var cart = await _cartServices.DeleteFromCartAsync(userId, cartItemId);
+    {   
+        var cart = await _cartServices.DeleteFromCartAsync(UserId, cartItemId);
 
         if (!cart.IsSuccess)
         {
@@ -64,9 +58,7 @@ public class CartController : ApiControllerBase
     [HttpPut("{cartItemId}")]
     public async Task<IActionResult> UpdateQuantityAsync(int cartItemId, [FromBody] ChangeQuantityDto changeQuantityDto)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-      
-        var cart = await _cartServices.UpdateQuantityAsync(userId, cartItemId, changeQuantityDto.Quantity);
+        var cart = await _cartServices.UpdateQuantityAsync(UserId, cartItemId, changeQuantityDto.Quantity);
 
         if (!cart.IsSuccess)
         {

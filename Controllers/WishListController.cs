@@ -21,9 +21,7 @@ public class WishListController : ApiControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllWishListItemAsync()
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        var result = await _wishListItem.GetAllWishListItemAsync(userId);
+        var result = await _wishListItem.GetAllWishListItemAsync(UserId);
 
         if(!result.IsSuccess)
         {
@@ -36,9 +34,7 @@ public class WishListController : ApiControllerBase
     [HttpGet("{wishListItemId}")]
     public async Task<IActionResult> GetWishListItemByIdAsync(int wishListItemId)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        var result = await _wishListItem.GetWishListItemById(userId, wishListItemId);
+        var result = await _wishListItem.GetWishListItemById(UserId, wishListItemId);
 
         if (!result.IsSuccess)
         {
@@ -52,9 +48,7 @@ public class WishListController : ApiControllerBase
 
     public async Task<IActionResult> AddItemToWishListAsync(int productId)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        var result = await _wishListItem.AddItemToWishListAsync(productId, userId);
+        var result = await _wishListItem.AddItemToWishListAsync(productId, UserId);
 
         if (!result.IsSuccess)
         {
@@ -67,9 +61,7 @@ public class WishListController : ApiControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteItemFromWishListAsync(int id)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        var result = await _wishListItem.DeleteItemFromWishListAsync(id, userId);
+        var result = await _wishListItem.DeleteItemFromWishListAsync(id, UserId);
 
         if (!result.IsSuccess)
         {

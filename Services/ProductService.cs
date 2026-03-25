@@ -34,7 +34,6 @@ public class ProductService : IProductService
 
     public async Task<Result<ProductDto>> GetProductByIdAsync(int id)
     {
-
         var cachedProduct = await _cache.GetStringAsync(CachedKeys.Product(id));
 
         if (!string.IsNullOrEmpty(cachedProduct))

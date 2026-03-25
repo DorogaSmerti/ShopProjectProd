@@ -49,9 +49,8 @@ public class ReviewController : ApiControllerBase
     [HttpPost]
     public async Task<IActionResult> AddReviewAsync(int productId, CreateReviewDto createReviewDto)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        var result = await _reviewService.AddReviewAsync(productId, userId, createReviewDto);
+        var result = await _reviewService.AddReviewAsync(productId, UserId, createReviewDto);
 
         if (!result.IsSuccess)
         {
