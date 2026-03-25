@@ -1,17 +1,16 @@
 using System.Net;
 using System.Text.Json;
+using Serilog;
 
 namespace MyFirstProject.Middleware;
 
 public class ExceptionMiddleware
 {
     private readonly RequestDelegate _next;
-    private readonly ILogger<ExceptionMiddleware> _logger;
 
-    public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger)
+    public ExceptionMiddleware(RequestDelegate next)
     {
         _next = next;
-        _logger = logger;
     }
 
     public async Task InvokeAsync(HttpContext context)
@@ -22,7 +21,7 @@ public class ExceptionMiddleware
         }
         catch(Exception ex)
         {
-            _logger.LogError(ex, "Что-то пошло не так", ex.Message);
+            Log.Error(ex, "Что-то пошло не так", ex.Message);
             await HandleExceptionAsync(context, ex);
         }
     }
